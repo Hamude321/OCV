@@ -11,11 +11,14 @@ class WindowCapture:
     offset_x = 0
     offset_y = 0
 
-    def __init__(self, window_name):
+    def __init__(self, window_name=None):
 
-        self.hwnd = win32gui.FindWindow(None,window_name)
-        if not self.hwnd:
-            raise Exception('Window not found: {}'.format(window_name))
+        if window_name is None:
+            self.hwnd = win32gui.GetDesktopWindow()
+        else:
+            self.hwnd = win32gui.FindWindow(None,window_name)
+            if not self.hwnd:
+                raise Exception('Window not found: {}'.format(window_name))
 
         #monitor width and height
         window_rect = win32gui.GetWindowRect(self.hwnd)
@@ -65,7 +68,8 @@ class WindowCapture:
 
         return img
 
-    def list_window_names(self):
+    @staticmethod
+    def list_window_names():
         def winEnumHandler(hwnd, ctx):
             if win32gui.IsWindowVisible(hwnd):
                 print(hex(hwnd), win32gui.GetWindowText(hwnd))
