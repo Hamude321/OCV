@@ -19,7 +19,11 @@ while(True):
     screenshot = wincap.get_screenshot()
 
     #cv.imshow('Computer Vision', screenshot)
-    points = vision_needle.find(screenshot, 0.5, 'rectangles')
+    rectangles = vision_needle.find(screenshot, 0.5)
+
+    output_image = vision_needle.draw_rectangles(screenshot, rectangles)
+
+    cv.imshow('Matches', output_image)
 
     print('FPS {}'.format(1/(time()- loop_time)))
     loop_time = time()
