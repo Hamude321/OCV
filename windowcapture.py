@@ -1,8 +1,14 @@
 import numpy as np
 import win32gui, win32ui, win32con
+from threading import Thread,Lock
 
 class WindowCapture:
 
+    #threading properties
+    stopped = True
+    lock = None
+    screenshot = None
+    #properties
     w = 0
     h = 0
     hwnd = None
@@ -12,6 +18,8 @@ class WindowCapture:
     offset_y = 0
 
     def __init__(self, window_name=None):
+        #create thread lock object
+        self.lock = Lock()
 
         if window_name is None:
             self.hwnd = win32gui.GetDesktopWindow()
@@ -77,3 +85,21 @@ class WindowCapture:
 
     def get_screen_position(self, pos):
         return (pos[0] + self.offset_x, pos[1] + self.offset_y)
+
+    def start(self):
+        self.stopped = False
+        t = Thread(target=self.run)
+        t.start()
+
+    def stop(self):
+        self.stopped = True
+
+    def run(self):
+
+        while not self.stopped:
+            #get an updated image of the game
+            screenshot = self.get_screenshot()
+            #lock the thread while updating the results
+            self.lock.acquire()
+            self.screenshot = screenshot
+            self.lock.release()
