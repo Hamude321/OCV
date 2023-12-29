@@ -9,10 +9,11 @@ class Vision:
     method = None
 
     def __init__(self, needle_img_path, method=cv.TM_CCOEFF_NORMED):
-        self.needle_img = cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
+        if needle_img_path:
+            self.needle_img = cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
 
-        self.needle_w = self.needle_img.shape[1]
-        self.needle_h = self.needle_img.shape[0]
+            self.needle_w = self.needle_img.shape[1]
+            self.needle_h = self.needle_img.shape[0]
         self.method = method
 
     def find(self, haystack_img, threshhold=0.5, max_results=10):
