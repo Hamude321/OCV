@@ -35,7 +35,7 @@ class Vision:
             rectangles.append(rect)
 
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5)
-        #print(rectangles)
+        print(rectangles)
 
         if len(rectangles) > max_results:
             print('Warning: Too many results, raise threshold')

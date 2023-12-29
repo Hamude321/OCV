@@ -11,7 +11,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 wincap = WindowCapture('Legends of Idleon')
 #WindowCapture.list_window_names()
-vision_needle = Vision('bear.jpg')
+vision_needle = Vision('chop.jpg')
 
 loop_time = time()
 while(True):
@@ -19,7 +19,7 @@ while(True):
     screenshot = wincap.get_screenshot()
 
     #cv.imshow('Computer Vision', screenshot)
-    rectangles = vision_needle.find(screenshot, 0.5)
+    rectangles = vision_needle.find(screenshot, 0.999999)
 
     output_image = vision_needle.draw_rectangles(screenshot, rectangles)
 
