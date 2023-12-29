@@ -19,7 +19,7 @@ while(True):
     screenshot = wincap.get_screenshot()
 
     #cv.imshow('Computer Vision', screenshot)
-    rectangles = vision_needle.find(screenshot, 0.5)
+    rectangles = vision_needle.find(screenshot, 0.7)
 
     output_image = vision_needle.draw_rectangles(screenshot, rectangles)
 
