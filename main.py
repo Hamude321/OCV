@@ -18,19 +18,29 @@ while(True):
 
     screenshot = wincap.get_screenshot()
 
-    #cv.imshow('Computer Vision', screenshot)
-    rectangles = vision_needle.find(screenshot, 0.7)
-
+    rectangles = vision_needle.find(screenshot, 0.3)
     output_image = vision_needle.draw_rectangles(screenshot, rectangles)
 
-    cv.imshow('Matches', output_image)
+    cv.imshow('Computer Vision', screenshot)
+    #cv.imshow('Matches', output_image)
 
     print('FPS {}'.format(1/(time()- loop_time)))
     loop_time = time()
 
-    if cv.waitKey(1) == ord('q'):
+    key = cv.waitKey(1)
+    if key == ord('q'):
         cv.destroyAllWindows
         break
+    elif key == ord('f'):
+        cv.imwrite('positive/{}.jpg'.format(loop_time), screenshot)
+    elif key == ord('d'):
+        cv.imwrite('negative/{}.jpg'.format(loop_time), screenshot)
 
 
 print('Done')
+
+
+
+
+
+
