@@ -1,8 +1,0 @@
-negative/neg1.jpg
-negative/neg2.jpg
-negative/neg3.jpg
-negative/neg4.jpg
-negative/neg5.jpg
-negative/neg6.jpg
-negative/neg7.jpg
-negative/neg8.jpg

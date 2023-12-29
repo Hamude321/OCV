@@ -1,6 +1,8 @@
 import cv2 as cv
 from threading import Thread, Lock
+from vision import Vision
 
+vision = Vision('assets/bear.jpg')
 
 class Detection:
 
@@ -9,14 +11,15 @@ class Detection:
     lock = None
     rectangles = []
     # properties
-    cascade = None
+    needle_img_path = None
     screenshot = None
+    threshhold = 0.3
 
-    def __init__(self, model_file_path):
+    def __init__(self, needle_img_path):
         # create a thread lock object
         self.lock = Lock()
         # load the trained model
-        self.cascade = cv.CascadeClassifier(model_file_path)
+        self.needle_img = cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
 
     def update(self, screenshot):
         self.lock.acquire()
@@ -36,7 +39,7 @@ class Detection:
         while not self.stopped:
             if not self.screenshot is None:
                 # do object detection
-                rectangles = self.cascade.detectMultiScale(self.screenshot)
+                rectangles = vision.find(self.screenshot,self.threshhold)
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.rectangles = rectangles

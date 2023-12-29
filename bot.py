@@ -50,7 +50,7 @@ class GameBot:
         self.window_h = window_size[1]
 
         # pre-load the needle image used to confirm our object detection
-        self.limestone_tooltip = cv.imread('limestone_tooltip.jpg', cv.IMREAD_UNCHANGED)
+        self.limestone_tooltip = cv.imread('assets/limestone_tooltip.jpg', cv.IMREAD_UNCHANGED)
 
         # start bot in the initializing mode to allow us time to get setup.
         # mark the time at which this started so we know when to complete it
