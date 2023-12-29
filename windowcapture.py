@@ -97,10 +97,9 @@ class WindowCapture:
     def run(self):
 
         while not self.stopped:
-            if not self.screenshot is None:
-                #get an updated image of the game
-                screenshot = self.get_screenshot()
-                #lock the thread while updating the results
-                self.lock.acquire()
-                self.screenshot = screenshot
-                self.lock.release()
+            #get an updated image of the game
+            screenshot = self.get_screenshot()
+            #lock the thread while updating the results
+            self.lock.acquire()
+            self.screenshot = screenshot
+            self.lock.release()
