@@ -5,14 +5,15 @@ from detection import Detection
 from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
+import pyautogui, sys
 
 #workind directory of the folder this is in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = True
 
-gameName = 'Legends Of Idleon'
-path = 'assets/warehouse.jpg'
+gameName = 'Legends of Idleon'
+path = 'assets/shroom.jpg'
 
 wincap = WindowCapture(gameName)
 
@@ -23,7 +24,7 @@ detector = Detection(path)
 vision = Vision(path)
 
 WindowCapture.list_window_names()
-
+  
 wincap.start()
 detector.start()
 
@@ -37,6 +38,10 @@ while(True):
     #give detector current screenshot
     detector.update(wincap.screenshot)
 
+    x, y = pyautogui.position()
+    positionStr = 'X: ' + str(x).rjust(4) + ' Y: ' + str(y).rjust(4)
+    print(positionStr, end='')
+    print('\b' * len(positionStr), end='', flush=True)
 
     if DEBUG:
         #draw detection results onto the original image
