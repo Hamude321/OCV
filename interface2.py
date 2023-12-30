@@ -4,6 +4,9 @@ from tkinter import *
 import ttkbootstrap as ttk
 import pyautogui
 from windowcapture import WindowCapture
+from main import Running
+
+main = Running(None)
 
 def get_titles():
     titles = []
@@ -24,7 +27,14 @@ def onselect(event):
     w = event.widget
     idx = int(w.curselection()[0])
     value = w.get(idx)
-    return value
+    
+    if main.isRunning is True:
+        main.close_window()
+        main.isRunning = False
+    else:
+        main.gameName=value
+        main.runstuff()
+    
 
 #window
 window = ttk.Window(themename='darkly')
