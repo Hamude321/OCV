@@ -8,7 +8,7 @@ class Interface:
 
     def init_control_gui(self):
         cv.namedWindow(self.TRACKBAR_WINDOW, cv.WINDOW_NORMAL)
-        cv.resizeWindow(self.TRACKBAR_WINDOW, 350, 700)
+        cv.resizeWindow(self.TRACKBAR_WINDOW, 350, 50)
 
         # required callback. we'll be using getTrackbarPos() to do lookups
         # instead of using the callback.
