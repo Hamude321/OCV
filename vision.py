@@ -26,7 +26,7 @@ class Vision:
         # TM_CCOEFF, TM_CCOEFF_NORMED, TM_CCORR, TM_CCORR_NORMED, TM_SQDIFF, TM_SQDIFF_NORMED
         self.method = method
 
-    def find(self, haystack_img, threshhold=0.4, max_results=10):
+    def find(self, haystack_img, threshhold, max_results=10):
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
 

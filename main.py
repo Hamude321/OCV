@@ -6,21 +6,27 @@ from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
+from interface import Interface
+from decimal import Decimal
 
 #workind directory of the folder this is in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 DEBUG = True
 
 gameName = 'BLACK DESERT - 458855'
 path = 'assets/warehouse.jpg'
-threshold = 0.5
+
+#load gui
+interface = Interface()
+interface.init_control_gui()
 
 #get window name
 wincap = WindowCapture(gameName)
 
 #load the detector
-detector = Detection(path, threshold)
+detector = Detection(path)
 
 #load an empty Vision class
 vision = Vision(path)
@@ -32,13 +38,14 @@ detector.start()
 
 loop_time = time()
 while(True):
-
+   
     #no screenshot? dont run
     if wincap.screenshot is None:
         continue
 
-    #give detector current screenshot
+    #give detector current screenshot and threshold
     detector.update(wincap.screenshot)
+    detector.update_threshold(interface.get_threshold_from_bar())
 
     if DEBUG:
         #draw detection results onto the original image
