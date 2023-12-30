@@ -7,7 +7,7 @@ from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
 from interface import Interface
-import interface2
+#import interface2
 
 #workind directory of the folder this is in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +16,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 gameName = 'BLACK DESERT - 458855'
-path = 'assets/warehouse.jpg'
+path = 'assets/plywood.jpg'
 
 #load gui
 interface = Interface()
@@ -58,6 +58,11 @@ while(True):
         loop_time = time()
         #print (detector.rectangles)
         #WindowCapture.show_cursor_position()
+
+    # x = vision.get_click_points(detector.rectangles)
+    # if len(x)>0:
+    #     pyautogui.click(x=x[0][0], y=x[0][1])
+    #     sleep(2)
 
     key = cv.waitKey(1)
     if key == ord('q'):

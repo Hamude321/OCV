@@ -72,7 +72,7 @@ class Vision:
         for (x,y,w,h) in rectangles:
             top_left = (x, y)
             bottom_right = (x + w, y + h)
-            cv.rectangle(haystack_img, top_left, bottom_right, line_color, lineType=line_type)
+            cv.rectangle(haystack_img, top_left, bottom_right, line_color, thickness= 3, lineType=line_type)
         return haystack_img
 
     def draw_crosshairs(self, haystack_img, points):

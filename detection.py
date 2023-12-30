@@ -47,7 +47,7 @@ class Detection:
         while not self.stopped:
             if not self.screenshot is None:
                 # do object detection
-                rectangles = self.vision.find(self.screenshot,self.threshold)
+                rectangles = self.vision.find(self.screenshot,self.threshold,50)
                 #print('test{}',i)
                 i = i+1
                 # lock the thread while updating the results
