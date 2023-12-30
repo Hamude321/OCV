@@ -1,36 +1,76 @@
 import cv2 as cv
 import numpy as np
 import os
-from time import time
+from detection import Detection
+from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
-
+import pyautogui, sys
+from interface import Interface
+from decimal import Decimal
 
 #workind directory of the folder this is in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-wincap = WindowCapture('Legends of Idleon')
-#WindowCapture.list_window_names()
-vision_needle = Vision('bear.jpg')
+
+DEBUG = True
+
+gameName = 'BLACK DESERT - 458855'
+path = 'assets/warehouse.jpg'
+
+#load gui
+interface = Interface()
+interface.init_control_gui()
+
+#get window name
+wincap = WindowCapture(gameName)
+
+#load the detector
+detector = Detection(path)
+
+#load an empty Vision class
+vision = Vision(path)
+
+WindowCapture.list_window_names()
+  
+wincap.start()
+detector.start()
 
 loop_time = time()
 while(True):
+   
+    #no screenshot? dont run
+    if wincap.screenshot is None:
+        continue
 
-    screenshot = wincap.get_screenshot()
+    #give detector current screenshot and threshold
+    detector.update(wincap.screenshot)
+    detector.update_threshold(interface.get_threshold_from_bar())
 
-    #cv.imshow('Computer Vision', screenshot)
-    rectangles = vision_needle.find(screenshot, 0.5)
+    if DEBUG:
+        #draw detection results onto the original image
+        detection_img = vision.draw_rectangles(wincap.screenshot, detector.rectangles)
+        #display the images
+        cv.imshow(gameName, detection_img) 
+        #debug the loop rate        
+        #print('FPS {}'.format(1/(time()- loop_time)))
+        loop_time = time()
+        #print (detector.rectangles)
+        WindowCapture.show_cursor_position()
 
-    output_image = vision_needle.draw_rectangles(screenshot, rectangles)
-
-    cv.imshow('Matches', output_image)
-
-    print('FPS {}'.format(1/(time()- loop_time)))
-    loop_time = time()
-
-    if cv.waitKey(1) == ord('q'):
+    key = cv.waitKey(1)
+    if key == ord('q'):
+        wincap.stop()
+        detector.stop()
         cv.destroyAllWindows
         break
-
+    elif key == ord('f'):
+        cv.imwrite('positive/{}.jpg'.format(loop_time), wincap.screenshot)
+    elif key == ord('d'):
+        cv.imwrite('negative/{}.jpg'.format(loop_time), wincap.screenshot)
 
 print('Done')
+
+
+
+
