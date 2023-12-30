@@ -26,7 +26,7 @@ def generate_positives():
 def generate_vector_from_positives(num=100, width =24, height=24):
     subprocess.run('C:/Users/Anwender/Desktop/Cascading/opencv/build/x64/vc15/bin/opencv_createsamples.exe -info pos.txt -w {} -h {} -num {} -vec pos.vec'.format(width,height, num))
 
-def run_machine_learning(stages = 5, numPos = 7, numNeg = 30, width = 24, height = 24, maxFalseAlarmRate = 0.3, minHitRate = 0.8 ):
+def run_machine_learning(stages = 10, numPos = 3, numNeg = 30, width = 24, height = 24, maxFalseAlarmRate = 0.3, minHitRate = 0.9 ):
     subprocess.run('C:/Users/Anwender/Desktop/Cascading/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data  cascade/ -vec pos.vec -bg neg.txt -w {} -h {} -precalcValBufSize 6000 -precalcIdxBufSize 6000 -numPos {} -numNeg {} -numStages {} -maxFalseAlarmRate {} -minHitRate {}'.format(width, height, numPos, numNeg, stages, maxFalseAlarmRate, minHitRate))
 
 #generate_negatives()
