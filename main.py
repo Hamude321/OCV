@@ -12,13 +12,15 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = True
 
-gameName = 'Legends of Idleon'
-path = 'assets/shroom.jpg'
+gameName = 'BLACK DESERT - 458855'
+path = 'assets/warehouse.jpg'
+threshold = 0.5
 
+#get window name
 wincap = WindowCapture(gameName)
 
 #load the detector
-detector = Detection(path)
+detector = Detection(path, threshold)
 
 #load an empty Vision class
 vision = Vision(path)
@@ -38,19 +40,16 @@ while(True):
     #give detector current screenshot
     detector.update(wincap.screenshot)
 
-    x, y = pyautogui.position()
-    positionStr = 'X: ' + str(x).rjust(4) + ' Y: ' + str(y).rjust(4)
-    print(positionStr, end='')
-    print('\b' * len(positionStr), end='', flush=True)
-
     if DEBUG:
         #draw detection results onto the original image
         detection_img = vision.draw_rectangles(wincap.screenshot, detector.rectangles)
         #display the images
         cv.imshow(gameName, detection_img) 
-        #debug the loop rate
+        #debug the loop rate        
         #print('FPS {}'.format(1/(time()- loop_time)))
         loop_time = time()
+        #print (detector.rectangles)
+        WindowCapture.show_cursor_position()
 
     key = cv.waitKey(1)
     if key == ord('q'):

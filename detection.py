@@ -13,13 +13,14 @@ class Detection:
     # properties
     needle_img_path = None
     screenshot = None
-    threshhold = 0.8
+    threshold = 0
     vision = None
 
-    def __init__(self, needle_img_path):
+    def __init__(self, needle_img_path, threshold=0.5):
         # create a thread lock object
         self.lock = Lock()
         # load the trained model
+        self.threshold=threshold
         self.needle_img = cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
         self.vision = Vision(needle_img_path)
 
@@ -41,7 +42,7 @@ class Detection:
         while not self.stopped:
             if not self.screenshot is None:
                 # do object detection
-                rectangles = self.vision.find(self.screenshot,self.threshhold)
+                rectangles = self.vision.find(self.screenshot,self.threshold)
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.rectangles = rectangles

@@ -1,6 +1,7 @@
 import numpy as np
 import win32gui, win32ui, win32con
 from threading import Thread, Lock
+import pyautogui
 
 
 class WindowCapture:
@@ -96,6 +97,15 @@ class WindowCapture:
             if win32gui.IsWindowVisible(hwnd):
                 print(hex(hwnd), win32gui.GetWindowText(hwnd))
         win32gui.EnumWindows(winEnumHandler, None)
+
+
+    @staticmethod
+    def show_cursor_position():
+        x, y = pyautogui.position()
+        positionStr = 'X: ' + str(x).rjust(4) + ' Y: ' + str(y).rjust(4)
+        print(positionStr, end='')
+        print('\b' * len(positionStr), end='', flush=True)
+
 
     # translate a pixel position on a screenshot image to a pixel position on the screen.
     # pos = (x, y)
