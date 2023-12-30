@@ -3,6 +3,8 @@ import numpy as np
 import pyautogui
 from time import sleep
 import cv2
+from threading import Thread, Lock
+
 
 class Vision:
 
@@ -11,9 +13,18 @@ class Vision:
     needle_h = 0
     method = None
 
+    # threading properties
+    stopped = True
+    lock = None
+    rectangles = []
+    # properties
+    screenshot = None
+    detection_img = None
+
 
     # constructor
     def __init__(self, needle_img_path, method=cv.TM_CCOEFF_NORMED):
+        self.lock = Lock()
         # load the image we're trying to match
         # https://docs.opencv.org/4.2.0/d4/da8/group__imgcodecs.html
         self.needle_img = cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
@@ -45,7 +56,7 @@ class Vision:
             rectangles.append(rect)
 
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.5)
-        #print(rectangles)
+        print(rectangles)
 
         if len(rectangles) > max_results:
             print('Warning: Too many results, raise threshold')
@@ -81,3 +92,35 @@ class Vision:
         for (center_x, center_y) in points: 
              cv.drawMarker(haystack_img, (center_x, center_y), marker_color, marker_type)
         return haystack_img
+    
+
+
+    def update_rectangles(self, rectangles):
+        self.lock.acquire()
+        self.rectangles = rectangles
+        self.lock.release()
+
+    def update(self, screenshot):
+        self.lock.acquire()
+        self.screenshot = screenshot
+        self.lock.release()
+
+    def start(self):
+        self.stopped = False
+        t = Thread(target=self.run)
+        t.start()
+
+    def stop(self):
+        self.stopped = True
+
+    def run(self):
+        # TODO: you can write your own time/iterations calculation to determine how fast this is
+        while not self.stopped:
+            if not self.screenshot is None:
+                if not self.rectangles is None:
+                    # do object detection
+                    detection_img = self.draw_rectangles(self.screenshot, self.rectangles)
+                    # lock the thread while updating the results
+                    self.lock.acquire()
+                    self.detection_img = detection_img
+                    self.lock.release()

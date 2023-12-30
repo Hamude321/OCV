@@ -15,6 +15,7 @@ DEBUG = True
 gameName = 'BLACK DESERT - 458855'
 path = 'assets/warehouse.jpg'
 threshold = 0.5
+detection_img = None
 
 #get window name
 wincap = WindowCapture(gameName)
@@ -29,6 +30,7 @@ WindowCapture.list_window_names()
   
 wincap.start()
 detector.start()
+vision.start()
 
 loop_time = time()
 while(True):
@@ -39,12 +41,16 @@ while(True):
 
     #give detector current screenshot
     detector.update(wincap.screenshot)
+    vision.update(wincap.screenshot)
+    vision.update(detector.rectangles)
+    detection_img =vision.detection_img
 
     if DEBUG:
-        #draw detection results onto the original image
-        detection_img = vision.draw_rectangles(wincap.screenshot, detector.rectangles)
         #display the images
-        cv.imshow(gameName, detection_img) 
+        if vision.detection_img is None:
+            print('rip')
+        else:
+            cv.imshow(gameName, detection_img) 
         #debug the loop rate        
         #print('FPS {}'.format(1/(time()- loop_time)))
         loop_time = time()
@@ -55,6 +61,7 @@ while(True):
     if key == ord('q'):
         wincap.stop()
         detector.stop()
+        vision.stop()
         cv.destroyAllWindows
         break
     elif key == ord('f'):

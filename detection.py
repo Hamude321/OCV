@@ -4,6 +4,7 @@ from vision import Vision
 
 
 
+
 class Detection:
 
     # threading properties
