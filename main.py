@@ -6,15 +6,23 @@ from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
+from interface import Interface
+from decimal import Decimal
 
 #workind directory of the folder this is in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
 DEBUG = True
 
-gameName = 'Legends of Idleon'
-path = 'assets/shroom.jpg'
+gameName = 'BLACK DESERT - 458855'
+path = 'assets/warehouse.jpg'
 
+#load gui
+interface = Interface()
+interface.init_control_gui()
+
+#get window name
 wincap = WindowCapture(gameName)
 
 #load the detector
@@ -30,27 +38,25 @@ detector.start()
 
 loop_time = time()
 while(True):
-
+   
     #no screenshot? dont run
     if wincap.screenshot is None:
         continue
 
-    #give detector current screenshot
+    #give detector current screenshot and threshold
     detector.update(wincap.screenshot)
-
-    x, y = pyautogui.position()
-    positionStr = 'X: ' + str(x).rjust(4) + ' Y: ' + str(y).rjust(4)
-    print(positionStr, end='')
-    print('\b' * len(positionStr), end='', flush=True)
+    detector.update_threshold(interface.get_threshold_from_bar())
 
     if DEBUG:
         #draw detection results onto the original image
         detection_img = vision.draw_rectangles(wincap.screenshot, detector.rectangles)
         #display the images
         cv.imshow(gameName, detection_img) 
-        #debug the loop rate
+        #debug the loop rate        
         #print('FPS {}'.format(1/(time()- loop_time)))
         loop_time = time()
+        #print (detector.rectangles)
+        WindowCapture.show_cursor_position()
 
     key = cv.waitKey(1)
     if key == ord('q'):

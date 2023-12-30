@@ -13,7 +13,7 @@ class Detection:
     # properties
     needle_img_path = None
     screenshot = None
-    threshhold = 0.8
+    threshold = 0.7
     vision = None
 
     def __init__(self, needle_img_path):
@@ -28,6 +28,11 @@ class Detection:
         self.screenshot = screenshot
         self.lock.release()
 
+    def update_threshold(self, threshold):
+        self.lock.acquire()
+        self.threshold = threshold
+        self.lock.release()
+
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
@@ -37,11 +42,14 @@ class Detection:
         self.stopped = True
 
     def run(self):
+        i=0
         # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             if not self.screenshot is None:
                 # do object detection
-                rectangles = self.vision.find(self.screenshot,self.threshhold)
+                rectangles = self.vision.find(self.screenshot,self.threshold)
+                #print('test{}',i)
+                i = i+1
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.rectangles = rectangles
