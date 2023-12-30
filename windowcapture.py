@@ -125,6 +125,11 @@ class WindowCapture:
     def stop(self):
         self.stopped = True
 
+    def update(self, hwnd):
+        self.lock.acquire()
+        self.hwnd = win32gui.FindWindow(None, hwnd)
+        self.lock.release()
+
     def run(self):
         # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:

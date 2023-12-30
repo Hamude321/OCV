@@ -7,7 +7,7 @@ from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
 from interface import Interface
-from decimal import Decimal
+import interface2
 
 #workind directory of the folder this is in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -46,6 +46,7 @@ while(True):
     #give detector current screenshot and threshold
     detector.update(wincap.screenshot)
     detector.update_threshold(interface.get_threshold_from_bar())
+    #wincap.update()
 
     if DEBUG:
         #draw detection results onto the original image
@@ -56,7 +57,7 @@ while(True):
         #print('FPS {}'.format(1/(time()- loop_time)))
         loop_time = time()
         #print (detector.rectangles)
-        WindowCapture.show_cursor_position()
+        #WindowCapture.show_cursor_position()
 
     key = cv.waitKey(1)
     if key == ord('q'):
