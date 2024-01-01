@@ -6,7 +6,9 @@ import pyautogui
 from windowcapture import WindowCapture
 from main import Running
 
-main = Running(None)
+#main = Running(None)
+test2 = False
+main = None
 
 def get_titles():
     titles = []
@@ -24,22 +26,31 @@ def convert():
     
 
 def onselect(event):
+    global test2
     w = event.widget
     idx = int(w.curselection()[0])
     value = w.get(idx)
-    
-    if main.isRunning is True:
+    print(test2)
+    if test2:
         main.close_window()
-        main.isRunning = False
-    else:
-        main.gameName=value
+    if test2 is False:
+        main = Running(value)
+        main.wincap = WindowCapture(value)
         main.runstuff()
+        test = True
     
+def stop_bot(event):
+    global test2
+    if test2:
+        main.close_window()
+        test2 = False
+    
+
 
 #window
 window = ttk.Window(themename='darkly')
 window.title('Detection Bot')
-window.geometry('500x500')
+window.geometry('1920x1080')
 
 #title
 title_label = ttk.Label(master=window, text = 'Test')
@@ -54,6 +65,9 @@ entry.pack(side ='left', padx=10)
 button.pack(side ='left', pady=50)
 input_frame.pack()
 
+button_stop = ttk.Button(master = input_frame, text='Stop')
+button_stop.pack()
+
 #output
 output_string = tk.StringVar()
 output_label = ttk.Label(master=window, text='Output', font = 'Calibri 24 bold', textvariable=output_string)
@@ -65,7 +79,7 @@ list.pack()
 titles = get_titles()
 for title in titles:
     list.insert(0, title)
-list.selection_set(first=0)
+#list.selection_set(first=0)
 
 
 
@@ -73,6 +87,7 @@ list.selection_set(first=0)
 #events
 button.bind('<Alt-KeyPress-a>', lambda event: print('an event'))
 test = list.bind('<<ListboxSelect>>', onselect)
+button_stop.bind('<ButtonRelease-1>', stop_bot)
 
 #run(always at the end)
 window.mainloop()
