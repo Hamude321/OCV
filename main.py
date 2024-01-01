@@ -21,6 +21,8 @@ class Running:
     DEBUG = True
     isRunning = False
     screen = None
+    detection_img = None
+    _return = False
 
     def __init__(self, gameName):
         self.gameName = gameName
@@ -37,9 +39,13 @@ class Running:
 
 
     def close_window(self):
+        cv.destroyWindow(self.gameName+'1')
         self.wincap.stop()
         self.detector.stop()
-        cv.destroyWindow(self.gameName)
+
+    def get_detection_img(self):
+        return self.detection_img
+
 
 
     def runstuff(self):
@@ -63,12 +69,16 @@ class Running:
                 #draw detection results onto the original image
                 detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)
                 #display the images
-                self.screen = cv.imshow(self.gameName, detection_img) 
+                self.detection_img = detection_img
+                self.screen = cv.imshow(self.gameName+'1', detection_img) 
                 #debug the loop rate        
                 #print('FPS {}'.format(1/(time()- loop_time)))
                 loop_time = time()
                 #print (detector.rectangles)
                 #WindowCapture.show_cursor_position()
+
+            if self._return:
+                sys.exit()
 
             key = cv.waitKey(1)
             if key == ord('q'):
