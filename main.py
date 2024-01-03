@@ -6,7 +6,7 @@ from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
-from interface import Interface
+
 
 class Running:
 
@@ -17,7 +17,6 @@ class Running:
     wincap = None
     detector = None
     vision = None
-    interface = None
     DEBUG = True
     isRunning = False
     screen = None
@@ -26,16 +25,15 @@ class Running:
 
     def __init__(self, gameName):
         self.gameName = gameName
-        self.interface = 0.7
         self.path = 'assets/warehouse.jpg'
         #get window name
         self.wincap = WindowCapture(self.gameName)
 
-        #load the detector
-        self.detector = Detection(self.path)
-
         #load an empty Vision class
         self.vision = Vision(self.path)
+
+        #load the detector
+        self.detector = Detection(self.vision)
 
 
     def close_window(self):
@@ -45,7 +43,6 @@ class Running:
 
     def get_detection_img(self):
         return self.detection_img
-
 
 
     def runstuff(self):
@@ -62,7 +59,6 @@ class Running:
 
             #give detector current screenshot and threshold
             self.detector.update(self.wincap.screenshot)
-            #self.detector.update_threshold(self.interface.get_threshold_from_bar())
             #wincap.update()
 
             if self.DEBUG:

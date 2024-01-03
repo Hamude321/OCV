@@ -26,7 +26,12 @@ class Vision:
         # TM_CCOEFF, TM_CCOEFF_NORMED, TM_CCORR, TM_CCORR_NORMED, TM_SQDIFF, TM_SQDIFF_NORMED
         self.method = method
 
-    def find(self, haystack_img, threshhold, max_results=10):
+    def update_needle_img_path(self, needle_img_path):
+        self.needle_img= cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
+        self.needle_w = self.needle_img.shape[1]
+        self.needle_h = self.needle_img.shape[0]
+
+    def find(self, haystack_img, threshhold, max_results=30):
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
 
@@ -72,7 +77,7 @@ class Vision:
         for (x,y,w,h) in rectangles:
             top_left = (x, y)
             bottom_right = (x + w, y + h)
-            cv.rectangle(haystack_img, top_left, bottom_right, line_color, lineType=line_type)
+            cv.rectangle(haystack_img, top_left, bottom_right, line_color, thickness=2,lineType=line_type)
         return haystack_img
 
     def draw_crosshairs(self, haystack_img, points):

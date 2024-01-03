@@ -11,17 +11,15 @@ class Detection:
     lock = None
     rectangles = []
     # properties
-    needle_img_path = None
     screenshot = None
     threshold = 0.7
     vision = None
 
-    def __init__(self, needle_img_path):
+    def __init__(self, vision):
         # create a thread lock object
         self.lock = Lock()
         # load the trained model
-        self.needle_img = cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
-        self.vision = Vision(needle_img_path)
+        self.vision = vision
 
     def update(self, screenshot):
         self.lock.acquire()
