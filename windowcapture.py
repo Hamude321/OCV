@@ -131,6 +131,8 @@ class WindowCapture:
         self.lock.release()
 
     def run(self):
+        if self.stopped:
+          return
         # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             # get an updated image of the game

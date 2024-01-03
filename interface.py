@@ -13,7 +13,7 @@ from detection import Detection
 
 
 #mainf = Running(None)
-test2 = False
+is_running = False
 mainf = None
 
 def get_titles():
@@ -26,38 +26,34 @@ def get_titles():
 
 #functions here i guess
 def show_video():
-    nuts = True
     # mile_input = entry_int.get()
     # print(output_string.set(mile_input))
     # print(list_string)
     display()
 
 def onselect(event):
-    global test2
+    global is_running
     global mainf
-    w = event.widget
-    idx = int(w.curselection()[0])
-    value = w.get(idx)
-    print(test2)
-    # if test2:
-    #     mainf.close_window()
-    if test2 is False:
+    global t1
+    if is_running is False:
+        w = event.widget
+        idx = int(w.curselection()[0])
+        value = w.get(idx)
         mainf = Running(value)
         t1 = threading.Thread(target=mainf.runstuff)
         t1.start()
         #mainf.wincap.update(value)
         #mainf.run()
         #display(mainf.detection_img)
-        test2 = True
+        is_running = True
     
 def stop_bot(event):
-    global test2
+    global is_running
     global mainf
-    nuts = False
-    if test2:
-        #mainf._return = True
+    print(is_running)
+    if is_running:
         mainf.close_window()
-        test2 = False
+        is_running = False
 
 def to_pil(img, label, x,y,w,h):
     img = cv.resize(img,(w,h))
@@ -70,9 +66,12 @@ def to_pil(img, label, x,y,w,h):
     label.place(x=x, y=y)
 
 def display():
-    img = mainf.get_detection_img()
-    to_pil(img, title_label, 50, 20, 1830, 800)
-    title_label.after(10, display)
+    if not mainf.detection_img is None:
+        img = mainf.get_detection_img()
+        to_pil(img, title_label, 50, 20, 1830, 800)
+        title_label.after(10, display)
+    else:
+        img = None
 
 def threshold(event):
     threshold=int((threshold_scale.get()))/100

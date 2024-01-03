@@ -22,6 +22,7 @@ class Running:
     screen = None
     detection_img = None
     _return = False
+    stop_thread = False
 
     def __init__(self, gameName):
         self.gameName = gameName
@@ -37,9 +38,10 @@ class Running:
 
 
     def close_window(self):
-        cv.destroyWindow(self.gameName+'1')
         self.wincap.stop()
         self.detector.stop()
+        self.stop_thread = True
+        return
 
     def get_detection_img(self):
         return self.detection_img
@@ -52,6 +54,8 @@ class Running:
 
         loop_time = time()
         while(True):
+            if self.stop_thread:
+                break
         
             #no screenshot? dont run
             if self.wincap.screenshot is None:

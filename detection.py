@@ -40,14 +40,13 @@ class Detection:
         self.stopped = True
 
     def run(self):
-        i=0
+        if self.stopped:
+            return
         # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             if not self.screenshot is None:
                 # do object detection
                 rectangles = self.vision.find(self.screenshot,self.threshold)
-                #print('test{}',i)
-                i = i+1
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.rectangles = rectangles
