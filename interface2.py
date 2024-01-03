@@ -8,6 +8,7 @@ from windowcapture import WindowCapture
 from main import Running
 import cv2 as cv
 from PIL import Image, ImageTk
+from detection import Detection
 
 
 #mainf = Running(None)
@@ -60,6 +61,7 @@ def stop_bot(event):
 def to_pil(img, label, x,y,w,h):
     img = cv.resize(img,(w,h))
     #img = cv.flip(img,1)
+    img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     image = Image.fromarray(img)
     pic = ImageTk.PhotoImage(image)
     label.configure(image = pic)
@@ -71,6 +73,11 @@ def display():
     to_pil(img, title_label, 10, 10, 1000, 1000)
     title_label.after(10, display)
 
+def threshold(event):
+    threshold=int((threshold_scale.get()))/100
+    threshold_string.set(threshold) 
+    if not mainf is None:
+        mainf.detector.update_threshold(threshold)
 
     
 
@@ -96,6 +103,13 @@ input_frame.pack()
 button_stop = ttk.Button(master = input_frame, text='Stop')
 button_stop.pack()
 
+threshold_scale =  ttk.Scale(window, value=30, from_=30, to=100, length=500)
+threshold_scale.pack()
+
+threshold_string= tk.StringVar()
+threshold_label = ttk.Label(window, text='blablalbla', textvariable=threshold_string)
+threshold_label.pack()
+
 #output
 output_string = tk.StringVar()
 output_label = ttk.Label(master=window, text='Output', font = 'Calibri 24 bold', textvariable=output_string)
@@ -117,6 +131,7 @@ for title in titles:
 button.bind('<Alt-KeyPress-a>', lambda event: print('an event'))
 test = list.bind('<<ListboxSelect>>', onselect)
 button_stop.bind('<ButtonRelease-1>', stop_bot)
+threshold_scale.bind('<B1-Motion>',threshold )
 
 #run(always at the end)
 window.mainloop()
