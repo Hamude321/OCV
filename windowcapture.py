@@ -20,7 +20,7 @@ class WindowCapture:
     offset_y = 0
 
     # constructor
-    def __init__(self, window_name=None):
+    def __init__(self, window_name=None, x1=0,x2=0,y1=0,y2=0):
         # create a thread lock object
         self.lock = Lock()
 
@@ -35,21 +35,38 @@ class WindowCapture:
 
         # get the window size
         window_rect = win32gui.GetWindowRect(self.hwnd)
-        self.w = 300
-        self.h = 100
+        if(x1 and x2 and y1 and y2)>0:
+            self.w = x2 - x1
+            self.h = y2 - y1
 
-        # account for the window border and titlebar and cut them off
-        border_pixels = 8
-        titlebar_pixels = 30
-        self.w = self.w - (border_pixels * 2)
-        self.h = self.h - titlebar_pixels - border_pixels
-        self.cropped_x = 50
-        self.cropped_y = 100
+            # account for the window border and titlebar and cut them off
+            # border_pixels = 8
+            # titlebar_pixels = 30
+            # self.w = self.w - (border_pixels * 2)
+            # self.h = self.h - titlebar_pixels - border_pixels
+            self.cropped_x = x1- window_rect[0]
+            self.cropped_y = y1-window_rect[1]
 
-        # set the cropped coordinates offset so we can translate screenshot
-        # images into actual screen positions
-        self.offset_x = window_rect[0] + self.cropped_x
-        self.offset_y = window_rect[1] + self.cropped_y
+            # set the cropped coordinates offset so we can translate screenshot
+            # images into actual screen positions
+            self.offset_x = window_rect[0] + self.cropped_x
+            self.offset_y = window_rect[1] + self.cropped_y
+        else:
+            self.w = window_rect[2] - window_rect[0]
+            self.h = window_rect[3] - window_rect[1]
+
+            # account for the window border and titlebar and cut them off
+            border_pixels = 8
+            titlebar_pixels = 30
+            self.w = self.w - (border_pixels * 2)
+            self.h = self.h - titlebar_pixels - border_pixels
+            self.cropped_x = border_pixels
+            self.cropped_y = titlebar_pixels
+
+            # set the cropped coordinates offset so we can translate screenshot
+            # images into actual screen positions
+            self.offset_x = window_rect[0] + self.cropped_x
+            self.offset_y = window_rect[1] + self.cropped_y
 
     def get_screenshot(self):
 
@@ -125,9 +142,25 @@ class WindowCapture:
     def stop(self):
         self.stopped = True
 
-    def update(self, hwnd):
+    def update(self, x1,y1,x2,y2):
         self.lock.acquire()
-        self.hwnd = win32gui.FindWindow(None, hwnd)
+        # get the window size
+        window_rect = win32gui.GetWindowRect(self.hwnd)
+        self.w = x2 - x1
+        self.h = y2 - y1
+
+        # account for the window border and titlebar and cut them off
+        border_pixels = 8
+        titlebar_pixels = 30
+        self.w = self.w - (border_pixels * 2)
+        self.h = self.h - titlebar_pixels - border_pixels
+        self.cropped_x = border_pixels
+        self.cropped_y = titlebar_pixels
+
+        # set the cropped coordinates offset so we can translate screenshot
+        # images into actual screen positions
+        self.offset_x = window_rect[0] + self.cropped_x
+        self.offset_y = window_rect[1] + self.cropped_y
         self.lock.release()
 
     def run(self):

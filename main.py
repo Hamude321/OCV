@@ -24,11 +24,11 @@ class Running:
     _return = False
     stop_thread = False
 
-    def __init__(self, gameName):
+    def __init__(self, gameName, x1=0,x2=0,y1=0,y2=0):
         self.gameName = gameName
         self.path = 'assets/warehouse.jpg'
         #get window name
-        self.wincap = WindowCapture(self.gameName)
+        self.wincap = WindowCapture(self.gameName, x1,x2,y1,y2)
 
         #load an empty Vision class
         self.vision = Vision(self.path)
@@ -63,10 +63,10 @@ class Running:
             #give detector current screenshot and threshold
             self.detector.update(self.wincap.screenshot)
             #wincap.update()
-            if(self.vision.max_val>=0.62):
-                pyautogui.press('space')
-                print('Space')
-                self.vision.max_val =0
+            # if(self.vision.max_val>=0.62):
+            #     pyautogui.press('space')
+            #     print('Space')
+            #     self.vision.max_val =0
 
             if self.DEBUG:
                 #draw detection results onto the original image
