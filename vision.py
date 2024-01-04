@@ -12,6 +12,7 @@ class Vision:
     needle_h = 0
     method = None
     loop_time = time()
+    max_val=0
 
 
     # constructor
@@ -39,6 +40,7 @@ class Vision:
         # self.loop_time = time()
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
+        _, self.max_val, _, max_loc = cv2.minMaxLoc(result)
 
         locations = np.where(result>=threshhold)
         locations = list(zip(*locations[::-1]))

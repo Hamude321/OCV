@@ -10,6 +10,7 @@ from main import Running
 import cv2 as cv
 from PIL import Image, ImageTk
 from detection import Detection
+from time import sleep
 
 
 #mainf = Running(None)
@@ -54,6 +55,7 @@ def stop_bot(event):
     if is_running:
         mainf.close_window()
         is_running = False
+        
 
 def to_pil(img, label, x,y,w,h):
     img = cv.resize(img,(w,h))

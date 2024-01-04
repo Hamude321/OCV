@@ -46,7 +46,6 @@ class Running:
     def get_detection_img(self):
         return self.detection_img
 
-
     def runstuff(self):
         self.isRunning=True
         self.wincap.start()
@@ -64,6 +63,10 @@ class Running:
             #give detector current screenshot and threshold
             self.detector.update(self.wincap.screenshot)
             #wincap.update()
+            if(self.vision.max_val>=0.62):
+                pyautogui.press('space')
+                print('Space')
+                self.vision.max_val =0
 
             if self.DEBUG:
                 #draw detection results onto the original image
@@ -74,8 +77,9 @@ class Running:
                 #debug the loop rate        
                 # print('FPS {}'.format(1/(time()- loop_time)))
                 # loop_time = time()
-                #print (detector.rectangles)
-                WindowCapture.show_cursor_position()
+                # if len(self.detector.rectangles) > 0:
+                #     print (self.detector.rectangles)
+                #WindowCapture.show_cursor_position()
 
             if self._return:
                 sys.exit()
