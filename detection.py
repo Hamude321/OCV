@@ -1,7 +1,7 @@
 import cv2 as cv
 from threading import Thread, Lock
 from vision import Vision
-
+from time import time
 
 
 class Detection:
@@ -14,6 +14,7 @@ class Detection:
     screenshot = None
     threshold = 0.7
     vision = None
+    loop_time = time()
 
     def __init__(self, vision):
         # create a thread lock object
@@ -45,6 +46,9 @@ class Detection:
         # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             if not self.screenshot is None:
+                #debug time
+                print('FPS {}'.format(1/(time()- self.loop_time)))
+                self.loop_time = time()
                 # do object detection
                 rectangles = self.vision.find(self.screenshot,self.threshold)
                 # lock the thread while updating the results

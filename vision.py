@@ -3,6 +3,7 @@ import numpy as np
 import pyautogui
 from time import sleep
 import cv2
+from time import time
 
 class Vision:
 
@@ -10,6 +11,7 @@ class Vision:
     needle_w = 0
     needle_h = 0
     method = None
+    loop_time = time()
 
 
     # constructor
@@ -32,10 +34,11 @@ class Vision:
         self.needle_h = self.needle_img.shape[0]
 
     def find(self, haystack_img, threshhold, max_results=30):
+        #debug time
+        # print('FPS {}'.format(1/(time()- self.loop_time)))
+        # self.loop_time = time()
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
-
-        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
         locations = np.where(result>=threshhold)
         locations = list(zip(*locations[::-1]))

@@ -70,10 +70,10 @@ class Running:
                 detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)
                 #display the images
                 self.detection_img = detection_img
-                self.screen = cv.imshow(self.gameName+'1', detection_img) 
+                #self.screen = cv.imshow(self.gameName+'1', detection_img) 
                 #debug the loop rate        
-                #print('FPS {}'.format(1/(time()- loop_time)))
-                loop_time = time()
+                # print('FPS {}'.format(1/(time()- loop_time)))
+                # loop_time = time()
                 #print (detector.rectangles)
                 #WindowCapture.show_cursor_position()
 
