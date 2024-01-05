@@ -24,11 +24,11 @@ class Running:
     _return = False
     stop_thread = False
 
-    def __init__(self, gameName):
+    def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
-        self.path = 'assets/warehouse.jpg'
+        self.path = 'assets/leaf4.jpg'
         #get window name
-        self.wincap = WindowCapture(self.gameName)
+        self.wincap = WindowCapture(self.gameName, recorded_coords)
 
         #load an empty Vision class
         self.vision = Vision(self.path)
@@ -45,7 +45,6 @@ class Running:
 
     def get_detection_img(self):
         return self.detection_img
-
 
     def runstuff(self):
         self.isRunning=True
@@ -64,6 +63,11 @@ class Running:
             #give detector current screenshot and threshold
             self.detector.update(self.wincap.screenshot)
             #wincap.update()
+            # if(self.vision.max_val>=0.87):
+            #     pyautogui.press('space')
+            #     print('Space')
+            #     self.vision.max_val =0
+            #     sleep(0.1)
 
             if self.DEBUG:
                 #draw detection results onto the original image
@@ -74,22 +78,23 @@ class Running:
                 #debug the loop rate        
                 # print('FPS {}'.format(1/(time()- loop_time)))
                 # loop_time = time()
-                #print (detector.rectangles)
-                WindowCapture.show_cursor_position()
+                # if len(self.detector.rectangles) > 0:
+                    # print (self.detector.rectangles)
+                #WindowCapture.show_cursor_position()
 
             if self._return:
                 sys.exit()
 
             key = cv.waitKey(1)
-            if key == ord('q'):
-                self.wincap.stop()
-                self.detector.stop()
-                cv.destroyAllWindows
-                break
-            elif key == ord('f'):
-                cv.imwrite('positive/{}.jpg'.format(loop_time), self.wincap.screenshot)
-            elif key == ord('d'):
-                cv.imwrite('negative/{}.jpg'.format(loop_time), self.wincap.screenshot)
+            # if key == ord('q'):
+            #     self.wincap.stop()
+            #     self.detector.stop()
+            #     cv.destroyAllWindows
+            #     break
+            # elif key == ord('f'):
+            #     cv.imwrite('positive/{}.jpg'.format(loop_time), self.wincap.screenshot)
+            # elif key == ord('d'):
+            #     cv.imwrite('negative/{}.jpg'.format(loop_time), self.wincap.screenshot)
 
 
         print('Done')
