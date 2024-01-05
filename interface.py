@@ -11,7 +11,7 @@ from PIL import Image, ImageTk
 from detection import Detection
 from time import sleep
 import threading
-
+import numpy as np
 
 
 
@@ -29,10 +29,10 @@ class User_Interface:
     is_running = False
     core = None
     t1 = None
-    mouse_x1=0
-    mouse_x2=0
-    mouse_y1=0
-    mouse_y2=0
+    recorded_coords = np.zeros((2,2), dtype=int)
+    is_showing = False
+    selected_item=None
+    i=0
     
     #initialize window
     def __init__(self, window, title, geometry):
@@ -59,21 +59,18 @@ class User_Interface:
         threshold_label = ttk.Label(master=input_frame, textvariable=self.threshold_string)
         threshold_label.pack()
 
-
-        #input
-        # entry_int = tk.IntVar(value=7)
-        # entry = ttk.Entry(master=input_frame, textvariable=entry_int)
-        # entry.pack(side ='left', padx=10)
-
         #button
-        button_show = ttk.Button(master=button_frame_1, text='Show', command=self.show_video)
-        button_show.pack(side ='right', padx=5)
+        self.button_start = ttk.Button(master=button_frame_1, text='Start', state=DISABLED)
+        self.button_start.pack(side ='right', padx=5)
 
-        button_stop = ttk.Button(master = button_frame_1, text='Stop')
-        button_stop.pack(side='right')
+        self.button_stop = ttk.Button(master = button_frame_1, text='Stop', state= DISABLED)
+        self.button_stop.pack(side='right')
 
-        button_load_img = ttk.Button(master = button_frame_2, text='Load Image')
-        button_load_img.pack(side='right', padx=5)
+        self.button_load_img = ttk.Button(master = button_frame_2, text='Load Image', state=DISABLED)
+        self.button_load_img.pack(side='right', padx=5)
+
+        self.button_show = ttk.Button(master=button_frame_1, text='Show', state=DISABLED)
+        self.button_show.pack()
 
         button_window_selection = ttk.Button(master =button_frame_2, text='Select Frame')
         button_window_selection.pack(side='right', padx=5)
@@ -96,65 +93,87 @@ class User_Interface:
         x2y2_label.pack(side='bottom')
 
         #list
-        list = Listbox(master=input_frame, width=50, height=10)
-        list.pack(side='left')
+        self.list = Listbox(master=input_frame, width=50, height=10)
+        self.list.pack(side='left')
         titles = self.get_titles()
         for title in titles:
-            list.insert(0, title)
-        #list.selection_set(first=0)
-
+            self.list.insert(0, title)
+            
         #events
-        list.bind('<<ListboxSelect>>', self.onselect)
-        button_stop.bind('<ButtonRelease-1>', self.stop_bot)
+        self.list.bind('<<ListboxSelect>>', self.onselect)
+        self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
         self.threshold_scale.bind('<B1-Motion>', self.threshold)
-        button_load_img.bind('<ButtonRelease-1>', self.load_img)
+        self.button_load_img.bind('<ButtonRelease-1>', self.load_img)
         button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
+        self.button_start.bind('<ButtonRelease-1>', self.start_thread)
+        self.button_show.bind('<ButtonRelease-1>', self.show_video)
 
-
+       #input
+        # entry_int = tk.IntVar(value=7)
+        # entry = ttk.Entry(master=input_frame, textvariable=entry_int)
+        # entry.pack(side ='left', padx=10)
+        
         #run(always at the end)
         self.window.mainloop()
 
 
 
-    #functions here i guess
-
-
-
+    #methods   
     def onselect(self, event):
-        if self.is_running is False:
-            w = event.widget
-            idx = int(w.curselection()[0])
-            value = w.get(idx)
-            self.core = Running(value, self.mouse_x1, self.mouse_x2,self.mouse_y1,self.mouse_y2)
-            self.t1 = threading.Thread(target=self.core.runstuff)
-            self.t1.start()
-            self.is_running = True
+        w = event.widget
+        idx = int(w.curselection()[0])
+        self.selected_item = w.get(idx)
+        if not self.is_running:        
+            self.button_start.config(state=NORMAL)  
+        print(self.selected_item)
         
     def stop_bot(self, event):
-        self.mouse_x1=0
-        self.mouse_x2=0
-        self.mouse_y1=0
-        self.mouse_y2=0
-        print(self.is_running)
+        self.recorded_coords = np.zeros((2,2), dtype=int)
         if self.is_running:
             self.core.close_window()
             self.is_running = False
+        self.list.config(state=DISABLED)
+        self.button_start.config(state=DISABLED)
+        self.button_load_img.config(state=DISABLED)
+        self.button_show.config(state=DISABLED)
+        self.list.config(state=NORMAL)
+        self.button_stop.config(state=DISABLED)
+        print('a')
+        # sleep(1)
 
     def start_selection(self,event):
             #if x1,y1=0....else if else
             sleep(2)
-            self.mouse_x1, self.mouse_y1 = pyautogui.position()
-            a=self.mouse_x1, self.mouse_y1
-            self.x1y1_string.set(a)
-            print(a)
+            self.recorded_coords[0,0], self.recorded_coords[0,1] = pyautogui.position()
+            top_left=self.recorded_coords[0,0], self.recorded_coords[0,1]
+            self.x1y1_string.set(top_left)
+            print(top_left)
             sleep(2)
-            self.mouse_x2, self.mouse_y2 = pyautogui.position()
-            b=self.mouse_x2, self.mouse_y2
-            self.x2y2_string.set(b)
-            print(b)
+
+            self.recorded_coords[1,0], self.recorded_coords[1,1] = pyautogui.position()
+            bottom_right=self.recorded_coords[1,0], self.recorded_coords[1,1]
+            self.x2y2_string.set(bottom_right)
+            print(bottom_right)
     
-    def show_video(self):
-        self.display()   
+    def start_thread(self, event):
+        if self.is_running is False:
+            self.core = Running(self.selected_item, self.recorded_coords)
+            self.t1 = threading.Thread(target=self.core.runstuff)
+            self.t1.start()
+            sleep(1)
+            self.is_running = True  
+            self.list.selection_clear(0, END)
+            self.list.config(state=DISABLED)
+            self.button_start.config(state=DISABLED)
+            self.button_stop.config(state=NORMAL)
+            if self.i <1:
+                self.button_show.config(state=NORMAL)
+                self.i+=1
+
+    def show_video(self, event):
+        self.display()
+        self.button_load_img.config(state=NORMAL)     
+        self.button_show.config(state=DISABLED)              
 
     def display(self):
         if not self.core.detection_img is None:

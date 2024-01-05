@@ -24,11 +24,11 @@ class Running:
     _return = False
     stop_thread = False
 
-    def __init__(self, gameName, x1=0,x2=0,y1=0,y2=0):
+    def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
         self.path = 'assets/leaf4.jpg'
         #get window name
-        self.wincap = WindowCapture(self.gameName, x1,x2,y1,y2)
+        self.wincap = WindowCapture(self.gameName, recorded_coords)
 
         #load an empty Vision class
         self.vision = Vision(self.path)
