@@ -1,4 +1,3 @@
-import threading
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
@@ -11,9 +10,9 @@ import cv2 as cv
 from PIL import Image, ImageTk
 from detection import Detection
 from time import sleep
+import threading
 
 
-#mainf = Running(None)
 is_running = False
 mainf = None
 
@@ -40,16 +39,16 @@ def onselect(event):
         mainf = Running(value, mouse_x1, mouse_x2,mouse_y1,mouse_y2)
         t1 = threading.Thread(target=mainf.runstuff)
         t1.start()
-        #mainf.wincap.update(value)
-        #mainf.run()
-        #display(mainf.detection_img)
         is_running = True
     
 def stop_bot(event):
     global is_running
     global mainf
     global mouse_x1, mouse_x2,mouse_y1,mouse_y2
-    mouse_x1, mouse_x2,mouse_y1,mouse_y2 = 0
+    mouse_x1=0
+    mouse_x2=0
+    mouse_y1=0
+    mouse_y2=0
     print(is_running)
     if is_running:
         mainf.close_window()
@@ -58,7 +57,6 @@ def stop_bot(event):
 
 def to_pil(img, label, x,y,w,h):
     img = cv.resize(img,(w,h))
-    #img = cv.flip(img,1)
     img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     image = Image.fromarray(img)
     pic = ImageTk.PhotoImage(image)
@@ -86,10 +84,6 @@ def load_img(event):
 
 
 def start_selection(event):
-        # global x0,y0
-        # eventorigin.x0 = eventorigin.x
-        # eventorigin.y0 = eventorigin.y
-        # print(x0, y0)
         global mouse_x1, mouse_y1
         global mouse_x2, mouse_y2
         sleep(2)
@@ -102,7 +96,6 @@ def start_selection(event):
         b=mouse_x2, mouse_y2
         x2y2_string.set(b)
         print(b)
-        #mainf.wincap.update(mouse_x1,mouse_y1,mouse_x2,mouse_y2)
 
     
 
@@ -113,7 +106,7 @@ window.title('Detection Bot')
 window.geometry('1920x1080')
 
 #frame
-input_frame = ttk.Frame(master=window)
+input_frame = ttk.Frame(master=window, borderwidth=2, relief=tk.RIDGE)
 input_frame.pack(side='bottom')
 
 button_frame_1 = ttk.Frame(master=input_frame)
@@ -132,9 +125,9 @@ threshold_label.pack()
 
 
 #input
-entry_int = tk.IntVar(value=7)
-entry = ttk.Entry(master=input_frame, textvariable=entry_int)
-#entry.pack(side ='left', padx=10)
+# entry_int = tk.IntVar(value=7)
+# entry = ttk.Entry(master=input_frame, textvariable=entry_int)
+# entry.pack(side ='left', padx=10)
 
 #button
 button_show = ttk.Button(master=button_frame_1, text='Show', command=show_video)

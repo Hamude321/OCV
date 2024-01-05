@@ -26,7 +26,7 @@ class Running:
 
     def __init__(self, gameName, x1=0,x2=0,y1=0,y2=0):
         self.gameName = gameName
-        self.path = 'assets/warehouse.jpg'
+        self.path = 'assets/leaf4.jpg'
         #get window name
         self.wincap = WindowCapture(self.gameName, x1,x2,y1,y2)
 
@@ -63,10 +63,11 @@ class Running:
             #give detector current screenshot and threshold
             self.detector.update(self.wincap.screenshot)
             #wincap.update()
-            # if(self.vision.max_val>=0.62):
+            # if(self.vision.max_val>=0.87):
             #     pyautogui.press('space')
             #     print('Space')
             #     self.vision.max_val =0
+            #     sleep(0.1)
 
             if self.DEBUG:
                 #draw detection results onto the original image
@@ -78,7 +79,7 @@ class Running:
                 # print('FPS {}'.format(1/(time()- loop_time)))
                 # loop_time = time()
                 # if len(self.detector.rectangles) > 0:
-                #     print (self.detector.rectangles)
+                    # print (self.detector.rectangles)
                 #WindowCapture.show_cursor_position()
 
             if self._return:
