@@ -100,13 +100,14 @@ class User_Interface:
             self.list.insert(0, title)
             
         #events
-        self.list.bind('<<ListboxSelect>>', self.onselect)
-        self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
-        self.threshold_scale.bind('<B1-Motion>', self.threshold)
-        self.button_load_img.bind('<ButtonRelease-1>', self.load_img)
-        button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
         self.button_start.bind('<ButtonRelease-1>', self.start_thread)
         self.button_show.bind('<ButtonRelease-1>', self.show_video)
+        self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
+        self.list.bind('<<ListboxSelect>>', self.onselect)   
+        self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
+        self.threshold_scale.bind('<B1-Motion>', self.threshold)    
+        button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
+
 
        #input
         # entry_int = tk.IntVar(value=7)
@@ -124,7 +125,8 @@ class User_Interface:
         idx = int(w.curselection()[0])
         self.selected_item = w.get(idx)
         if not self.is_running:        
-            self.button_start.config(state=NORMAL)  
+            self.button_start.config(state=NORMAL) 
+            self.button_start.bind('<ButtonRelease-1>', self.start_thread) 
         print(self.selected_item)
         
     def stop_bot(self, event):
@@ -133,11 +135,17 @@ class User_Interface:
             self.core.close_window()
             self.is_running = False
         self.list.config(state=DISABLED)
+        self.list.unbind('<<ListboxSelect>>')
         self.button_start.config(state=DISABLED)
+        self.button_start.unbind('<ButtonRelease-1>')
         self.button_load_img.config(state=DISABLED)
+        self.button_load_img.unbind('<ButtonRelease-1>')  
         self.button_show.config(state=DISABLED)
+        self.button_show.unbind('<ButtonRelease-1>')
         self.list.config(state=NORMAL)
+        self.list.bind('<<ListboxSelect>>', self.onselect)
         self.button_stop.config(state=DISABLED)
+        self.button_stop.unbind('<ButtonRelease-1>')
         print('a')
         # sleep(1)
 
@@ -164,16 +172,24 @@ class User_Interface:
             self.is_running = True  
             self.list.selection_clear(0, END)
             self.list.config(state=DISABLED)
+            self.list.unbind('<<ListboxSelect>>')  
             self.button_start.config(state=DISABLED)
+            self.button_start.unbind('<ButtonRelease-1>')
             self.button_stop.config(state=NORMAL)
+            self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
+            self.button_load_img.config(state=NORMAL)     
+            self.button_load_img.bind('<ButtonRelease-1>', self.load_img)
             if self.i <1:
                 self.button_show.config(state=NORMAL)
+                self.button_show.bind('<ButtonRelease-1>', self.show_video)
                 self.i+=1
 
     def show_video(self, event):
         self.display()
         self.button_load_img.config(state=NORMAL)     
-        self.button_show.config(state=DISABLED)              
+        self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
+        self.button_show.config(state=DISABLED) 
+        self.button_show.unbind('<ButtonRelease-1>')             
 
     def display(self):
         if not self.core.detection_img is None:
@@ -200,7 +216,9 @@ class User_Interface:
 
     def load_img(self,event):
         file = filedialog.askopenfilename(initialdir= "assets/", filetypes= [("Image file", (".jpg"))])
-        self.core.vision.update_needle_img_path(file)
+        if len(file)>0:
+            self.core.vision.update_needle_img_path(file)
+            
 
 
     def get_titles(self):

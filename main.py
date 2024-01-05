@@ -86,15 +86,15 @@ class Running:
                 sys.exit()
 
             key = cv.waitKey(1)
-            if key == ord('q'):
-                self.wincap.stop()
-                self.detector.stop()
-                cv.destroyAllWindows
-                break
-            elif key == ord('f'):
-                cv.imwrite('positive/{}.jpg'.format(loop_time), self.wincap.screenshot)
-            elif key == ord('d'):
-                cv.imwrite('negative/{}.jpg'.format(loop_time), self.wincap.screenshot)
+            # if key == ord('q'):
+            #     self.wincap.stop()
+            #     self.detector.stop()
+            #     cv.destroyAllWindows
+            #     break
+            # elif key == ord('f'):
+            #     cv.imwrite('positive/{}.jpg'.format(loop_time), self.wincap.screenshot)
+            # elif key == ord('d'):
+            #     cv.imwrite('negative/{}.jpg'.format(loop_time), self.wincap.screenshot)
 
 
         print('Done')
