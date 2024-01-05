@@ -6,13 +6,15 @@ from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
+import pathlib
 
 class Running:
 
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    
+    current_path = os.path.dirname(os.path.abspath(__file__))
 
     gameName = None
-    path = None
+    img_path = None
     wincap = None
     detector = None
     vision = None
@@ -25,12 +27,13 @@ class Running:
 
     def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
-        self.path = 'assets/leaf4.jpg'
+        self.img_path = 'assets\leaf4.jpg'
+        self.img_path = self.current_path+'\\'+self.img_path
         #get window name
         self.wincap = WindowCapture(self.gameName, recorded_coords)
 
         #load an empty Vision class
-        self.vision = Vision(self.path)
+        self.vision = Vision(self.img_path)
 
         #load the detector
         self.detector = Detection(self.vision)
@@ -49,6 +52,7 @@ class Running:
         self.isRunning=True
         self.wincap.start()
         self.detector.start()
+        print(self.img_path)
 
         loop_time = time()
         while(True):
@@ -73,7 +77,7 @@ class Running:
                 detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)
                 #display the images
                 self.detection_img = detection_img
-                self.screen = cv.imshow(self.gameName+'1', detection_img) 
+                #self.screen = cv.imshow(self.gameName+'1', detection_img) 
                 #debug the loop rate        
                 # print('FPS {}'.format(1/(time()- loop_time)))
                 # loop_time = time()

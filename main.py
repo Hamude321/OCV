@@ -97,11 +97,11 @@ class User_Interface:
             self.list.insert(0, title)
             
         #events
-        self.button_start.bind('<ButtonRelease-1>', self.start_thread)
-        self.button_show.bind('<ButtonRelease-1>', self.show_video)
-        self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
+        #self.button_start.bind('<ButtonRelease-1>', self.start_thread)
+        #self.button_show.bind('<ButtonRelease-1>', self.show_video)
+        #self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
         self.list.bind('<<ListboxSelect>>', self.onselect)   
-        self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
+        #self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
         self.threshold_scale.bind('<B1-Motion>', self.threshold)    
         button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
 
@@ -143,7 +143,6 @@ class User_Interface:
         self.list.bind('<<ListboxSelect>>', self.onselect)
         self.button_stop.config(state=DISABLED)
         self.button_stop.unbind('<ButtonRelease-1>')
-        print('a')
         # sleep(1)
 
     def start_selection(self,event):
@@ -212,7 +211,7 @@ class User_Interface:
             self.core.detector.update_threshold(threshold)
 
     def load_img(self,event):
-        file = filedialog.askopenfilename(initialdir= "assets/", filetypes= [("Image file", (".jpg"))])
+        file = filedialog.askopenfilename(initialdir= "assets\\", filetypes= [("Image file", (".jpg"))])
         if len(file)>0:
             self.core.vision.update_needle_img_path(file)
             
