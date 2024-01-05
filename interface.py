@@ -141,6 +141,7 @@ class User_Interface:
             self.is_running = False
 
     def start_selection(self,event):
+            #if x1,y1=0....else if else
             sleep(2)
             self.mouse_x1, self.mouse_y1 = pyautogui.position()
             a=self.mouse_x1, self.mouse_y1
