@@ -3,6 +3,7 @@ import numpy as np
 import pyautogui
 from time import sleep
 import cv2
+from time import time
 
 class Vision:
 
@@ -10,6 +11,8 @@ class Vision:
     needle_w = 0
     needle_h = 0
     method = None
+    loop_time = time()
+    max_val=0
 
 
     # constructor
@@ -26,11 +29,18 @@ class Vision:
         # TM_CCOEFF, TM_CCOEFF_NORMED, TM_CCORR, TM_CCORR_NORMED, TM_SQDIFF, TM_SQDIFF_NORMED
         self.method = method
 
-    def find(self, haystack_img, threshhold, max_results=10):
+    def update_needle_img_path(self, needle_img_path):
+        self.needle_img= cv.imread(needle_img_path, cv.IMREAD_UNCHANGED)
+        self.needle_w = self.needle_img.shape[1]
+        self.needle_h = self.needle_img.shape[0]
+
+    def find(self, haystack_img, threshhold, max_results=30):
+        #debug time
+        # print('FPS {}'.format(1/(time()- self.loop_time)))
+        # self.loop_time = time()
 
         result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
-
-        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+        _, self.max_val, _, max_loc = cv2.minMaxLoc(result)
 
         locations = np.where(result>=threshhold)
         locations = list(zip(*locations[::-1]))
@@ -72,7 +82,7 @@ class Vision:
         for (x,y,w,h) in rectangles:
             top_left = (x, y)
             bottom_right = (x + w, y + h)
-            cv.rectangle(haystack_img, top_left, bottom_right, line_color, lineType=line_type)
+            cv.rectangle(haystack_img, top_left, bottom_right, line_color, thickness=2,lineType=line_type)
         return haystack_img
 
     def draw_crosshairs(self, haystack_img, points):

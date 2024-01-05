@@ -6,70 +6,98 @@ from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
-from interface import Interface
-from decimal import Decimal
-
-#workind directory of the folder this is in
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-DEBUG = True
+class Running:
 
-gameName = 'BLACK DESERT - 458855'
-path = 'assets/warehouse.jpg'
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-#load gui
-interface = Interface()
-interface.init_control_gui()
+    gameName = None
+    path = None
+    wincap = None
+    detector = None
+    vision = None
+    DEBUG = True
+    isRunning = False
+    screen = None
+    detection_img = None
+    _return = False
+    stop_thread = False
 
-#get window name
-wincap = WindowCapture(gameName)
+    def __init__(self, gameName, recorded_coords):
+        self.gameName = gameName
+        self.path = 'assets/leaf4.jpg'
+        #get window name
+        self.wincap = WindowCapture(self.gameName, recorded_coords)
 
-#load the detector
-detector = Detection(path)
+        #load an empty Vision class
+        self.vision = Vision(self.path)
 
-#load an empty Vision class
-vision = Vision(path)
+        #load the detector
+        self.detector = Detection(self.vision)
 
-WindowCapture.list_window_names()
-  
-wincap.start()
-detector.start()
 
-loop_time = time()
-while(True):
-   
-    #no screenshot? dont run
-    if wincap.screenshot is None:
-        continue
+    def close_window(self):
+        self.wincap.stop()
+        self.detector.stop()
+        self.stop_thread = True
+        return
 
-    #give detector current screenshot and threshold
-    detector.update(wincap.screenshot)
-    detector.update_threshold(interface.get_threshold_from_bar())
+    def get_detection_img(self):
+        return self.detection_img
 
-    if DEBUG:
-        #draw detection results onto the original image
-        detection_img = vision.draw_rectangles(wincap.screenshot, detector.rectangles)
-        #display the images
-        cv.imshow(gameName, detection_img) 
-        #debug the loop rate        
-        #print('FPS {}'.format(1/(time()- loop_time)))
+    def runstuff(self):
+        self.isRunning=True
+        self.wincap.start()
+        self.detector.start()
+
         loop_time = time()
-        #print (detector.rectangles)
-        WindowCapture.show_cursor_position()
+        while(True):
+            if self.stop_thread:
+                break
+        
+            #no screenshot? dont run
+            if self.wincap.screenshot is None:
+                continue
 
-    key = cv.waitKey(1)
-    if key == ord('q'):
-        wincap.stop()
-        detector.stop()
-        cv.destroyAllWindows
-        break
-    elif key == ord('f'):
-        cv.imwrite('positive/{}.jpg'.format(loop_time), wincap.screenshot)
-    elif key == ord('d'):
-        cv.imwrite('negative/{}.jpg'.format(loop_time), wincap.screenshot)
+            #give detector current screenshot and threshold
+            self.detector.update(self.wincap.screenshot)
+            #wincap.update()
+            # if(self.vision.max_val>=0.87):
+            #     pyautogui.press('space')
+            #     print('Space')
+            #     self.vision.max_val =0
+            #     sleep(0.1)
 
-print('Done')
+            if self.DEBUG:
+                #draw detection results onto the original image
+                detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)
+                #display the images
+                self.detection_img = detection_img
+                self.screen = cv.imshow(self.gameName+'1', detection_img) 
+                #debug the loop rate        
+                # print('FPS {}'.format(1/(time()- loop_time)))
+                # loop_time = time()
+                # if len(self.detector.rectangles) > 0:
+                    # print (self.detector.rectangles)
+                #WindowCapture.show_cursor_position()
+
+            if self._return:
+                sys.exit()
+
+            key = cv.waitKey(1)
+            # if key == ord('q'):
+            #     self.wincap.stop()
+            #     self.detector.stop()
+            #     cv.destroyAllWindows
+            #     break
+            # elif key == ord('f'):
+            #     cv.imwrite('positive/{}.jpg'.format(loop_time), self.wincap.screenshot)
+            # elif key == ord('d'):
+            #     cv.imwrite('negative/{}.jpg'.format(loop_time), self.wincap.screenshot)
+
+
+        print('Done')
 
 
 
