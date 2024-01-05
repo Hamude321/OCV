@@ -13,9 +13,6 @@ from time import sleep
 import threading
 import numpy as np
 
-
-
-
     
 def main():
     window = ttk.Window(themename='darkly')
