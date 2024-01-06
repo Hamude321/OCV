@@ -14,6 +14,7 @@ import threading
 import numpy as np
 import win32gui, win32ui, win32con
 import pygetwindow as gw
+from pygame import mixer
 
     
 def main():
@@ -32,6 +33,8 @@ class User_Interface:
     is_showing = False
     selected_item=None
     i=0
+    mixer.init()
+    sound = mixer.Sound("ding.mp3")
     
     #initialize window
     def __init__(self, window, title, geometry):
@@ -54,7 +57,7 @@ class User_Interface:
         #self.input_frame.pack(expand=True)
         self.input_frame.grid(column=0, sticky='nsew')
         self.input_frame.columnconfigure((0,1,2), weight=1)
-        self.input_frame.rowconfigure((0,1,2,3,4,5), weight=1)
+        self.input_frame.rowconfigure((0,1,2,3,4,5,6), weight=1)
         self.toggle_frame=ttk.Frame(master=self.input_frame)
         # self.toggle_frame.grid(column=0, row=6)
         # ttk.Label(self.toggle_frame, background='yellow').pack(expand=True, fill='both')
@@ -95,12 +98,14 @@ class User_Interface:
         output_label.grid(column=2, row=3)
 
         self.x1y1_string = tk.StringVar()
-        x1y1_label = ttk.Label(master =self.input_frame,textvariable=self.x1y1_string)
-        x1y1_label.grid(column=2, row=4)
+        self.x1y1_string.set('x: y:')
+        self.x1y1_label = ttk.Label(master =self.input_frame,textvariable=self.x1y1_string)
+        self.x1y1_label.grid(column=1, row=5, sticky='nsw')
 
         self.x2y2_string = tk.StringVar()
+        self.x2y2_string.set('x: y:')
         x2y2_label = ttk.Label(master= self.input_frame, textvariable=self.x2y2_string)
-        x2y2_label.grid(column=2, row=2)
+        x2y2_label.grid(column=1, row=6, sticky='nsw')
 
         #list
         self.list = Listbox(master=self.input_frame, width=50, height=10)
@@ -141,8 +146,8 @@ class User_Interface:
         
     def stop_bot(self, event):
         self.recorded_coords = np.zeros((2,2), dtype=int)
-        self.x1y1_string.set('Empty')
-        self.x2y2_string.set('Empty')
+        self.x1y1_string.set('x: y:')
+        self.x2y2_string.set('x: y:')
         if self.is_running:
             self.core.close_window()
             self.is_running = False
@@ -171,14 +176,17 @@ class User_Interface:
                 sleep(2)
                 self.recorded_coords[0,0], self.recorded_coords[0,1] = pyautogui.position()
                 top_left=self.recorded_coords[0,0], self.recorded_coords[0,1]
-                self.x1y1_string.set(top_left)
+                self.x1y1_string.set('x: {} y: {}'.format(top_left[0], top_left[1]))
+                self.sound.play()
                 print(top_left)
-                sleep(2)
 
+                sleep(2)
                 self.recorded_coords[1,0], self.recorded_coords[1,1] = pyautogui.position()
                 bottom_right=self.recorded_coords[1,0], self.recorded_coords[1,1]
-                self.x2y2_string.set(bottom_right)
+                self.x2y2_string.set('x: {} y: {}'.format(bottom_right[0], bottom_right[1]))
+                self.sound.play()
                 print(bottom_right)
+                self.start_thread(self)
         
     def start_thread(self, event):
         if self.is_running is False:
