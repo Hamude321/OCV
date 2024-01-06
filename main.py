@@ -71,8 +71,8 @@ class User_Interface:
         self.button_show = ttk.Button(master=button_frame_1, text='Show', state=DISABLED)
         self.button_show.pack()
 
-        button_window_selection = ttk.Button(master =button_frame_2, text='Select Frame')
-        button_window_selection.pack(side='right', padx=5)
+        self.button_window_selection = ttk.Button(master =button_frame_2, text='Select Frame')
+        self.button_window_selection.pack(side='right', padx=5)
 
         #scale
         self.threshold_scale = ttk.Scale(master=input_frame, value=30, from_=30, to=100, length=500)
@@ -105,7 +105,7 @@ class User_Interface:
         self.list.bind('<<ListboxSelect>>', self.onselect)   
         #self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
         self.threshold_scale.bind('<B1-Motion>', self.threshold)    
-        button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
+        self.button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
 
 
        #input
@@ -130,9 +130,13 @@ class User_Interface:
         
     def stop_bot(self, event):
         self.recorded_coords = np.zeros((2,2), dtype=int)
+        self.x1y1_string.set('Empty')
+        self.x2y2_string.set('Empty')
         if self.is_running:
             self.core.close_window()
             self.is_running = False
+        self.button_window_selection.config(state=NORMAL)
+        self.button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
         self.list.config(state=DISABLED)
         self.list.unbind('<<ListboxSelect>>')
         self.button_start.config(state=DISABLED)
@@ -152,7 +156,7 @@ class User_Interface:
             chosen_window = None
             if self.selected_item:
                 chosen_window = gw.getWindowsWithTitle(self.selected_item)
-                
+
             if chosen_window:
                 chosen_window = chosen_window[0]
                 chosen_window.activate()
@@ -184,6 +188,8 @@ class User_Interface:
             self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
             self.button_load_img.config(state=NORMAL)     
             self.button_load_img.bind('<ButtonRelease-1>', self.load_img)
+            self.button_window_selection.config(state=DISABLED)
+            self.button_window_selection.unbind('<ButtonRelease-1>')
             if self.i <1:
                 self.button_show.config(state=NORMAL)
                 self.button_show.bind('<ButtonRelease-1>', self.show_video)
