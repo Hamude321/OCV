@@ -41,69 +41,76 @@ class User_Interface:
         self.window.geometry(geometry)
 
         #frame
-        input_frame = ttk.Frame(master=self.window, borderwidth=2, relief=tk.RIDGE)
-        input_frame.pack(side='bottom', )
+        self.video_frame=ttk.Frame(master=self.window, borderwidth=2, relief=tk.RIDGE)
+        self.video_frame.place(x=0, y=0, relwidth=1, relheight=0.7)
 
-        button_frame_1 = ttk.Frame(master=input_frame)
-        button_frame_1.pack(side='right')
+        self.option_frame=ttk.Frame(master=self.window, borderwidth=2, relief=tk.RIDGE)
+        self.option_frame.place(x=0, rely=0.7, relheight=0.3, relwidth=1)
+        #ttk.Label(self.option_frame, background='yellow').pack(expand=True, fill='both')
+        self.option_frame.columnconfigure((0,1), weight=1)
 
-        button_frame_2 = ttk.Frame(master=input_frame)
-        button_frame_2.pack(side='right', padx=10)
+        self.input_frame = ttk.Frame(self.option_frame, borderwidth=2, relief=tk.RIDGE)
+        #self.input_frame.place(x=0, rely=0.7, relheight=0.3, relwidth=0.6)
+        #self.input_frame.pack(expand=True)
+        self.input_frame.grid(column=0, sticky='nsew')
+        self.input_frame.columnconfigure((0,1,2), weight=1)
+        self.input_frame.rowconfigure((0,1,2,3,4,5), weight=1)
+        self.toggle_frame=ttk.Frame(master=self.input_frame)
+        # self.toggle_frame.grid(column=0, row=6)
+        # ttk.Label(self.toggle_frame, background='yellow').pack(expand=True, fill='both')
+
+
 
         #label
-        self.title_label = ttk.Label(master=self.window, text = 'Test')
-        self.title_label.pack(side='top')
+        self.title_label = ttk.Label(master=self.video_frame)
+        self.title_label.pack(side='top', expand=True, fill='both')
 
         self.threshold_string= tk.StringVar()
-        threshold_label = ttk.Label(master=input_frame, textvariable=self.threshold_string)
-        threshold_label.pack()
+        threshold_label = ttk.Label(master=self.input_frame, textvariable=self.threshold_string)
+        threshold_label.grid(column=2, row=3)
 
         #button
-        self.button_start = ttk.Button(master=button_frame_1, text='Start', state=DISABLED)
-        self.button_start.pack(side ='right', padx=5)
+        self.button_start = ttk.Button(master=self.input_frame, text='Start', state=DISABLED)
+        self.button_start.grid(column=1, row=0, pady=10, sticky='nsw', ipadx=20)
 
-        self.button_stop = ttk.Button(master = button_frame_1, text='Stop', state= DISABLED)
-        self.button_stop.pack(side='right')
+        self.button_stop = ttk.Button(master = self.input_frame, text='Stop', state= DISABLED)
+        self.button_stop.grid(column=1, row=1, sticky='nsw', ipadx=20)
 
-        self.button_load_img = ttk.Button(master = button_frame_2, text='Load Image', state=DISABLED)
-        self.button_load_img.pack(side='right', padx=5)
+        self.button_load_img = ttk.Button(master = self.input_frame, text='Load Image', state=DISABLED)
+        self.button_load_img.grid(column=1, row=3, sticky='nsw', pady=10)
 
-        self.button_show = ttk.Button(master=button_frame_1, text='Show', state=DISABLED)
-        self.button_show.pack()
+        self.button_window_selection = ttk.Button(master = self.input_frame, text='Select Frame')
+        self.button_window_selection.grid(column=1, row=4, sticky='nsw')
 
-        self.button_window_selection = ttk.Button(master = button_frame_2, text='Select Frame')
-        self.button_window_selection.pack(side='right', padx=5)
-
-        self.button_refresh_list = ttk.Button(master = input_frame, text='Refresh')
-        self.button_refresh_list.pack(side='bottom')
+        self.button_refresh_list = ttk.Button(master = self.input_frame, text='Refresh')
+        self.button_refresh_list.grid(column=0, row=6)
 
         #scale
-        self.threshold_scale = ttk.Scale(master=input_frame, value=30, from_=30, to=100, length=500)
-        self.threshold_scale.pack()
+        self.threshold_scale = ttk.Scale(master=self.input_frame, value=30, from_=30, to=100, length=500)
+        self.threshold_scale.grid(column=2, row=2)
 
         #output
         output_string = tk.StringVar()
-        output_label = ttk.Label(master=input_frame, text='Output', font = 'Calibri 24 bold', textvariable=output_string)
-        output_label.pack()
+        output_label = ttk.Label(master=self.input_frame, text='Output', font = 'Calibri 24 bold', textvariable=output_string)
+        output_label.grid(column=2, row=3)
 
         self.x1y1_string = tk.StringVar()
-        x1y1_label = ttk.Label(master =button_frame_2,textvariable=self.x1y1_string)
-        x1y1_label.pack(side='top')
+        x1y1_label = ttk.Label(master =self.input_frame,textvariable=self.x1y1_string)
+        x1y1_label.grid(column=2, row=4)
 
         self.x2y2_string = tk.StringVar()
-        x2y2_label = ttk.Label(master= button_frame_2, textvariable=self.x2y2_string)
-        x2y2_label.pack(side='bottom')
+        x2y2_label = ttk.Label(master= self.input_frame, textvariable=self.x2y2_string)
+        x2y2_label.grid(column=2, row=2)
 
         #list
-        self.list = Listbox(master=input_frame, width=50, height=10)
-        self.list.pack(side='left')
+        self.list = Listbox(master=self.input_frame, width=50, height=10)
+        self.list.grid(column=0, row=0, rowspan=6, sticky='nwes', padx=10, pady=10)
         self.titles = self.get_titles()
         for title in self.titles:
             self.list.insert(0, title)
             
         #events
         #self.button_start.bind('<ButtonRelease-1>', self.start_thread)
-        #self.button_show.bind('<ButtonRelease-1>', self.show_video)
         #self.button_stop.bind('<ButtonRelease-1>', self.stop_bot)
         self.list.bind('<<ListboxSelect>>', self.onselect)   
         #self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
@@ -147,8 +154,6 @@ class User_Interface:
         self.button_start.unbind('<ButtonRelease-1>')
         self.button_load_img.config(state=DISABLED)
         self.button_load_img.unbind('<ButtonRelease-1>')  
-        self.button_show.config(state=DISABLED)
-        self.button_show.unbind('<ButtonRelease-1>')
         self.list.config(state=NORMAL)
         self.list.bind('<<ListboxSelect>>', self.onselect)
         self.button_stop.config(state=DISABLED)
@@ -156,7 +161,6 @@ class User_Interface:
         # sleep(1)
 
     def start_selection(self,event):
-            #chosen_window = win32gui.FindWindow(None, self.selected_item)
             chosen_window = None
             if self.selected_item:
                 chosen_window = gw.getWindowsWithTitle(self.selected_item)
@@ -181,9 +185,10 @@ class User_Interface:
             self.core = Running(self.selected_item, self.recorded_coords)
             self.t1 = threading.Thread(target=self.core.runstuff)
             self.t1.start()
-            sleep(1)
+            sleep(1)            
             self.is_running = True  
             self.list.selection_clear(0, END)
+            #enable/disable widgets
             self.list.config(state=DISABLED)
             self.list.unbind('<<ListboxSelect>>')  
             self.button_start.config(state=DISABLED)
@@ -195,26 +200,27 @@ class User_Interface:
             self.button_window_selection.config(state=DISABLED)
             self.button_window_selection.unbind('<ButtonRelease-1>')
             if self.i <1:
-                self.button_show.config(state=NORMAL)
-                self.button_show.bind('<ButtonRelease-1>', self.show_video)
+                self.show_video()
                 self.i+=1
 
-    def show_video(self, event):
+    def show_video(self):
         self.display()
+        #enable/disable widgets
         self.button_load_img.config(state=NORMAL)     
         self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
-        self.button_show.config(state=DISABLED) 
-        self.button_show.unbind('<ButtonRelease-1>')             
+           
 
     def display(self):
         if not self.core.detection_img is None:
             img = self.core.get_detection_img()
-            self.to_pil(img, self.title_label, 50, 20, 1830, 800)
+            self.to_pil(img, self.title_label, 10, 10)
             self.title_label.after(10, self.display)
         else:
             img = None
 
-    def to_pil(self, img, label, x,y,w,h):
+    def to_pil(self, img, label, x,y):
+        w = self.video_frame.winfo_width()- 2*x
+        h = self.video_frame.winfo_height()- 2*y
         img = cv.resize(img,(w,h))
         img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
         image = Image.fromarray(img)
