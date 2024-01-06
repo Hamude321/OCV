@@ -42,7 +42,7 @@ class User_Interface:
 
         #frame
         input_frame = ttk.Frame(master=self.window, borderwidth=2, relief=tk.RIDGE)
-        input_frame.pack(side='bottom')
+        input_frame.pack(side='bottom', )
 
         button_frame_1 = ttk.Frame(master=input_frame)
         button_frame_1.pack(side='right')
@@ -71,8 +71,11 @@ class User_Interface:
         self.button_show = ttk.Button(master=button_frame_1, text='Show', state=DISABLED)
         self.button_show.pack()
 
-        self.button_window_selection = ttk.Button(master =button_frame_2, text='Select Frame')
+        self.button_window_selection = ttk.Button(master = button_frame_2, text='Select Frame')
         self.button_window_selection.pack(side='right', padx=5)
+
+        self.button_refresh_list = ttk.Button(master = input_frame, text='Refresh')
+        self.button_refresh_list.pack(side='bottom')
 
         #scale
         self.threshold_scale = ttk.Scale(master=input_frame, value=30, from_=30, to=100, length=500)
@@ -94,8 +97,8 @@ class User_Interface:
         #list
         self.list = Listbox(master=input_frame, width=50, height=10)
         self.list.pack(side='left')
-        titles = self.get_titles()
-        for title in titles:
+        self.titles = self.get_titles()
+        for title in self.titles:
             self.list.insert(0, title)
             
         #events
@@ -106,6 +109,7 @@ class User_Interface:
         #self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
         self.threshold_scale.bind('<B1-Motion>', self.threshold)    
         self.button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
+        self.button_refresh_list.bind('<ButtonRelease-1>', self.refresh_list)
 
 
        #input
@@ -231,12 +235,21 @@ class User_Interface:
             self.core.vision.update_needle_img_path(file)
             
     def get_titles(self):
-        titles = []
+        self.titles = []
         for x in pyautogui.getAllWindows():  
             if len(x.title)>0:
-                titles.append(x.title)
-        print(titles)
-        return titles
+                self.titles.append(x.title)
+        print(self.titles)
+        return self.titles
+    
+    def refresh_list(self, event):
+        self.titles = []
+        self.list.delete(0, END)
+        for x in pyautogui.getAllWindows():  
+            if len(x.title)>0:
+                self.titles.append(x.title)
+        for title in self.titles:
+                    self.list.insert(0, title)           
 
 
 main()
