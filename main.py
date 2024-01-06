@@ -12,6 +12,8 @@ from detection import Detection
 from time import sleep
 import threading
 import numpy as np
+import win32gui, win32ui, win32con
+import pygetwindow as gw
 
     
 def main():
@@ -146,19 +148,26 @@ class User_Interface:
         # sleep(1)
 
     def start_selection(self,event):
-            #if x1,y1=0....else if else
-            sleep(2)
-            self.recorded_coords[0,0], self.recorded_coords[0,1] = pyautogui.position()
-            top_left=self.recorded_coords[0,0], self.recorded_coords[0,1]
-            self.x1y1_string.set(top_left)
-            print(top_left)
-            sleep(2)
+            #chosen_window = win32gui.FindWindow(None, self.selected_item)
+            chosen_window = None
+            if self.selected_item:
+                chosen_window = gw.getWindowsWithTitle(self.selected_item)
+                
+            if chosen_window:
+                chosen_window = chosen_window[0]
+                chosen_window.activate()
+                sleep(2)
+                self.recorded_coords[0,0], self.recorded_coords[0,1] = pyautogui.position()
+                top_left=self.recorded_coords[0,0], self.recorded_coords[0,1]
+                self.x1y1_string.set(top_left)
+                print(top_left)
+                sleep(2)
 
-            self.recorded_coords[1,0], self.recorded_coords[1,1] = pyautogui.position()
-            bottom_right=self.recorded_coords[1,0], self.recorded_coords[1,1]
-            self.x2y2_string.set(bottom_right)
-            print(bottom_right)
-    
+                self.recorded_coords[1,0], self.recorded_coords[1,1] = pyautogui.position()
+                bottom_right=self.recorded_coords[1,0], self.recorded_coords[1,1]
+                self.x2y2_string.set(bottom_right)
+                print(bottom_right)
+        
     def start_thread(self, event):
         if self.is_running is False:
             self.core = Running(self.selected_item, self.recorded_coords)
@@ -215,8 +224,6 @@ class User_Interface:
         if len(file)>0:
             self.core.vision.update_needle_img_path(file)
             
-
-
     def get_titles(self):
         titles = []
         for x in pyautogui.getAllWindows():  
