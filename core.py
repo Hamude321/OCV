@@ -28,7 +28,7 @@ class Running:
 
     def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
-        self.img_path = 'assets\leaf4.jpg'
+        self.img_path = 'assets\pics\leaf4.jpg'
         self.img_path = self.current_path+'\\'+self.img_path
         print(self.img_path)
         #get window name

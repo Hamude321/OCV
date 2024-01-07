@@ -15,11 +15,12 @@ import numpy as np
 import win32gui, win32ui, win32con
 import pygetwindow as gw
 from pygame import mixer
+import os
 
     
 def main():
     window = ttk.Window(themename='darkly')
-    window1 = User_Interface(window,'Detection Bot', '1920x1080')
+    window1 = User_Interface(window,'Detection', '1920x1080')
     return None
     
 
@@ -34,7 +35,8 @@ class User_Interface:
     selected_item=None
     i=0
     mixer.init()
-    sound = mixer.Sound("ding.mp3")
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    sound = mixer.Sound(current_path+'\\'+'assets\\sound\\ding.mp3')
     
     #initialize window
     def __init__(self, window, title, geometry):
@@ -256,7 +258,7 @@ class User_Interface:
             self.core.detector.update_threshold(threshold)
 
     def load_img(self,event):
-        file = filedialog.askopenfilename(initialdir= "assets\\", filetypes= [("Image file", (".jpg"))])
+        file = filedialog.askopenfilename(initialdir= "assets\\pics\\", filetypes= [("Image file", (".jpg"))])
         if len(file)>0:
             self.core.vision.update_needle_img_path(file)
             
