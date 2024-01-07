@@ -15,6 +15,7 @@ class Detection:
     threshold = 0.7
     vision = None
     loop_time = time()
+    fps = 0
 
     def __init__(self, vision):
         # create a thread lock object
@@ -50,11 +51,12 @@ class Detection:
         while not self.stopped:
             if not self.screenshot is None:
                 #debug time
-                self.fps = int((1/(time()- self.loop_time)))
-                self.loop_time = time()
                 # do object detection
                 rectangles = self.vision.find(self.screenshot,self.threshold)
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.rectangles = rectangles
+                if (time()- self.loop_time)>0:
+                    self.fps = int((1/(time()- self.loop_time)))
+                    self.loop_time = time()
                 self.lock.release()
