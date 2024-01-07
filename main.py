@@ -111,8 +111,8 @@ class User_Interface:
         self.button_refresh_list.grid(column=0, row=6)
 
         #scale
-        self.threshold_scale = ttk.Scale(master=self.input_frame, value=30, from_=30, to=100, length=500)
-        self.threshold_scale.grid(column=2, row=2, sticky='nsw')
+        self.threshold_scale = ttk.Scale(master=self.input_frame, value=30, from_=30, to=100)
+        self.threshold_scale.grid(column=2, row=2, sticky='nswe')
 
         #list
         self.list = Listbox(master=self.input_frame, width=50, height=10)

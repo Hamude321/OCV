@@ -6,7 +6,6 @@ from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
-import pathlib
 
 class Running:
 
@@ -26,11 +25,12 @@ class Running:
     stop_thread = False
     loop_time = time()
 
+    needle_images = []
+
     def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
         self.img_path = 'assets\pics\leaf4.jpg'
         self.img_path = self.current_path+'\\'+self.img_path
-        print(self.img_path)
         #get window name
         self.wincap = WindowCapture(self.gameName, recorded_coords)
 
@@ -40,6 +40,8 @@ class Running:
         #load the detector
         self.detector = Detection(self.vision)
 
+    def add_additional_needleimage():
+        return
 
     def close_window(self):
         self.wincap.stop()
@@ -57,8 +59,6 @@ class Running:
         self.isRunning=True
         self.wincap.start()
         self.detector.start()
-        print(self.img_path)
-
         
         while(True):
             if self.stop_thread:
@@ -68,9 +68,12 @@ class Running:
             if self.wincap.screenshot is None:
                 continue
 
-            #give detector current screenshot and threshold
+            #give detector current screenshot
             self.detector.update(self.wincap.screenshot)
-            #wincap.update()
+
+            #draw detection results onto the original image
+            self.detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)            
+
             # if(self.vision.max_val>=0.87):
             #     pyautogui.press('space')
             #     print('Space')
@@ -78,11 +81,8 @@ class Running:
             #     sleep(0.1)
 
             if self.DEBUG:
-                #draw detection results onto the original image
-                detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)
                 #display the images
-                self.detection_img = detection_img
-                #self.screen = cv.imshow(self.gameName+'1', detection_img) 
+                #self.screen = cv.imshow(self.gameName+'1', self.detection_img) 
                 #debug the loop rate        
                 self.fps=int((1/(time()- self.loop_time)))
                 self.loop_time = time()
