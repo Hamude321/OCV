@@ -65,9 +65,9 @@ class WindowCapture:
             self.h = window_rect[3] - window_rect[1]
 
             # account for the window border and titlebar and cut them off
-            border_pixels = 8
-            titlebar_pixels = 30
-            self.w = self.w - (border_pixels * 2)
+            border_pixels = 0
+            titlebar_pixels = 20
+            # self.w = self.w - (border_pixels * 2)
             self.h = self.h - titlebar_pixels - border_pixels
             self.cropped_x = border_pixels
             self.cropped_y = titlebar_pixels

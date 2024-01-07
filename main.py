@@ -65,8 +65,8 @@ class User_Interface:
 
 
         #label
-        self.title_label = ttk.Label(master=self.video_frame)
-        self.title_label.pack(side='top', expand=True, fill='both')
+        self.video_label = ttk.Label(master=self.video_frame)
+        self.video_label.pack(side='top', expand=True, fill='both')
 
         self.threshold_string= tk.StringVar()
         threshold_label = ttk.Label(master=self.input_frame, font = 'Calibri 24 bold', textvariable=self.threshold_string)
@@ -112,8 +112,6 @@ class User_Interface:
         self.threshold_scale = ttk.Scale(master=self.input_frame, value=30, from_=30, to=100, length=500)
         self.threshold_scale.grid(column=2, row=2, sticky='nsw')
 
-
-
         #list
         self.list = Listbox(master=self.input_frame, width=50, height=10)
         self.list.grid(column=0, row=0, rowspan=6, sticky='nwes', padx=10, pady=10)
@@ -146,10 +144,11 @@ class User_Interface:
         w = event.widget
         idx = int(w.curselection()[0])
         self.selected_item = w.get(idx)
+
+        #enable/disable widgets
         if not self.is_running:        
             self.button_start.config(state=NORMAL) 
             self.button_start.bind('<ButtonRelease-1>', self.start_thread) 
-        print(self.selected_item)
         
     def stop_bot(self, event):
         self.recorded_coords = np.zeros((2,2), dtype=int)
@@ -158,6 +157,8 @@ class User_Interface:
         if self.is_running:
             self.core.close_window()
             self.is_running = False
+
+        #enable/disable widgets
         self.button_window_selection.config(state=NORMAL)
         self.button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
         self.list.config(state=DISABLED)
@@ -170,7 +171,6 @@ class User_Interface:
         self.list.bind('<<ListboxSelect>>', self.onselect)
         self.button_stop.config(state=DISABLED)
         self.button_stop.unbind('<ButtonRelease-1>')
-        # sleep(1)
 
     def start_selection(self,event):
             chosen_window = None
@@ -202,8 +202,12 @@ class User_Interface:
             self.t1.start()
             sleep(1)            
             self.is_running = True  
-            self.list.selection_clear(0, END)
+            if self.i <1:
+                self.show_video()
+                self.i+=1            
+
             #enable/disable widgets
+            self.list.selection_clear(0, END)
             self.list.config(state=DISABLED)
             self.list.unbind('<<ListboxSelect>>')  
             self.button_start.config(state=DISABLED)
@@ -214,12 +218,11 @@ class User_Interface:
             self.button_load_img.bind('<ButtonRelease-1>', self.load_img)
             self.button_window_selection.config(state=DISABLED)
             self.button_window_selection.unbind('<ButtonRelease-1>')
-            if self.i <1:
-                self.show_video()
-                self.i+=1
+
 
     def show_video(self):
         self.display()
+        
         #enable/disable widgets
         self.button_load_img.config(state=NORMAL)     
         self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
@@ -228,10 +231,10 @@ class User_Interface:
     def display(self):
         if not self.core.detection_img is None:
             img = self.core.get_detection_img()
-            self.to_pil(img, self.title_label, 10, 10)
+            self.to_pil(img, self.video_label, 0, 0)
             self.core_fps_string.set('Core: {}'.format(self.core.get_core_fps()))
             self.detection_fps_string.set('Detection: {}'.format(self.core.detector.get_detection_fps()))
-            self.title_label.after(10, self.display)
+            self.video_label.after(10, self.display)
         else:
             img = None
 
