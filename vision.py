@@ -34,7 +34,7 @@ class Vision:
         self.needle_w = self.needle_img.shape[1]
         self.needle_h = self.needle_img.shape[0]
 
-    def find(self, haystack_img, threshhold, max_results=30):
+    def find(self, haystack_img, threshhold, max_results=15):
         #debug time
         # print('FPS {}'.format(1/(time()- self.loop_time)))
         # self.loop_time = time()

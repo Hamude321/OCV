@@ -39,6 +39,9 @@ class Detection:
 
     def stop(self):
         self.stopped = True
+    
+    def get_detection_fps(self):
+        return self.fps
 
     def run(self):
         if self.stopped:
@@ -47,8 +50,8 @@ class Detection:
         while not self.stopped:
             if not self.screenshot is None:
                 #debug time
-                # print('FPS {}'.format(1/(time()- self.loop_time)))
-                # self.loop_time = time()
+                self.fps = int((1/(time()- self.loop_time)))
+                self.loop_time = time()
                 # do object detection
                 rectangles = self.vision.find(self.screenshot,self.threshold)
                 # lock the thread while updating the results

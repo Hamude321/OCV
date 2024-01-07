@@ -69,8 +69,28 @@ class User_Interface:
         self.title_label.pack(side='top', expand=True, fill='both')
 
         self.threshold_string= tk.StringVar()
-        threshold_label = ttk.Label(master=self.input_frame, textvariable=self.threshold_string)
-        threshold_label.grid(column=2, row=3)
+        threshold_label = ttk.Label(master=self.input_frame, font = 'Calibri 24 bold', textvariable=self.threshold_string)
+        threshold_label.grid(column=2, row=3, sticky='nsw')
+
+        self.core_fps_string = tk.StringVar()
+        self.core_fps_string.set('Core: 0')
+        self.core_fps_label = ttk.Label(master=self.input_frame, textvariable=self.core_fps_string)
+        self.core_fps_label.grid(column=2, row=5, sticky='nse')
+
+        self.detection_fps_string = tk.StringVar()
+        self.detection_fps_string.set('Detection: 0')
+        self.detection_fps_label = ttk.Label(master=self.input_frame, textvariable=self.detection_fps_string)
+        self.detection_fps_label.grid(column=2, row=6, sticky='nse')
+
+        self.x1y1_string = tk.StringVar()
+        self.x1y1_string.set('x: y:')
+        self.x1y1_label = ttk.Label(master =self.input_frame,textvariable=self.x1y1_string)
+        self.x1y1_label.grid(column=1, row=5, sticky='nsw')
+
+        self.x2y2_string = tk.StringVar()
+        self.x2y2_string.set('x: y:')
+        x2y2_label = ttk.Label(master= self.input_frame, textvariable=self.x2y2_string)
+        x2y2_label.grid(column=1, row=6, sticky='nsw')
 
         #button
         self.button_start = ttk.Button(master=self.input_frame, text='Start', state=DISABLED)
@@ -90,22 +110,9 @@ class User_Interface:
 
         #scale
         self.threshold_scale = ttk.Scale(master=self.input_frame, value=30, from_=30, to=100, length=500)
-        self.threshold_scale.grid(column=2, row=2)
+        self.threshold_scale.grid(column=2, row=2, sticky='nsw')
 
-        #output
-        output_string = tk.StringVar()
-        output_label = ttk.Label(master=self.input_frame, text='Output', font = 'Calibri 24 bold', textvariable=output_string)
-        output_label.grid(column=2, row=3)
 
-        self.x1y1_string = tk.StringVar()
-        self.x1y1_string.set('x: y:')
-        self.x1y1_label = ttk.Label(master =self.input_frame,textvariable=self.x1y1_string)
-        self.x1y1_label.grid(column=1, row=5, sticky='nsw')
-
-        self.x2y2_string = tk.StringVar()
-        self.x2y2_string.set('x: y:')
-        x2y2_label = ttk.Label(master= self.input_frame, textvariable=self.x2y2_string)
-        x2y2_label.grid(column=1, row=6, sticky='nsw')
 
         #list
         self.list = Listbox(master=self.input_frame, width=50, height=10)
@@ -222,6 +229,8 @@ class User_Interface:
         if not self.core.detection_img is None:
             img = self.core.get_detection_img()
             self.to_pil(img, self.title_label, 10, 10)
+            self.core_fps_string.set('Core: {}'.format(self.core.get_core_fps()))
+            self.detection_fps_string.set('Detection: {}'.format(self.core.detector.get_detection_fps()))
             self.title_label.after(10, self.display)
         else:
             img = None

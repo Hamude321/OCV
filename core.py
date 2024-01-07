@@ -24,6 +24,7 @@ class Running:
     detection_img = None
     _return = False
     stop_thread = False
+    loop_time = time()
 
     def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
@@ -48,14 +49,17 @@ class Running:
 
     def get_detection_img(self):
         return self.detection_img
-
+    
+    def get_core_fps(self):
+        return self.fps
+    
     def runstuff(self):
         self.isRunning=True
         self.wincap.start()
         self.detector.start()
         print(self.img_path)
 
-        loop_time = time()
+        
         while(True):
             if self.stop_thread:
                 break
@@ -80,8 +84,8 @@ class Running:
                 self.detection_img = detection_img
                 #self.screen = cv.imshow(self.gameName+'1', detection_img) 
                 #debug the loop rate        
-                # print('FPS {}'.format(1/(time()- loop_time)))
-                # loop_time = time()
+                self.fps=int((1/(time()- self.loop_time)))
+                self.loop_time = time()
                 # if len(self.detector.rectangles) > 0:
                     # print (self.detector.rectangles)
                 #WindowCapture.show_cursor_position()
