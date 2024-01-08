@@ -33,6 +33,9 @@ class Detection:
         self.threshold = threshold
         self.lock.release()
 
+    def get_detection_fps(self):
+        return self.fps
+    
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
@@ -41,9 +44,6 @@ class Detection:
     def stop(self):
         self.stopped = True
     
-    def get_detection_fps(self):
-        return self.fps
-
     def run(self):
         if self.stopped:
             return

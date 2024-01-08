@@ -6,6 +6,7 @@ from time import time, sleep
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
+from automation import Automation
 
 class Running:
 
@@ -24,6 +25,7 @@ class Running:
     _return = False
     stop_thread = False
     loop_time = time()
+    #automation = None
 
     needle_images = []
 
@@ -40,12 +42,16 @@ class Running:
         #load the detector
         self.detector = Detection(self.vision)
 
+        #load the automation
+        #self.automation = Automation(self.detector)
+
     def add_additional_needleimage():
         return
 
     def close_window(self):
         self.wincap.stop()
         self.detector.stop()
+        #self.automation.stop()
         self.stop_thread = True
         return
 
@@ -59,6 +65,8 @@ class Running:
         self.isRunning=True
         self.wincap.start()
         self.detector.start()
+        # self.automation.start()
+      
         
         while(True):
             if self.stop_thread:
@@ -74,11 +82,6 @@ class Running:
             #draw detection results onto the original image
             self.detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)            
 
-            # if(self.vision.max_val>=0.87):
-            #     pyautogui.press('space')
-            #     print('Space')
-            #     self.vision.max_val =0
-            #     sleep(0.1)
 
             if self.DEBUG:
                 #display the images
