@@ -16,6 +16,7 @@ import win32gui, win32ui, win32con
 import pygetwindow as gw
 from pygame import mixer
 import os
+from datetime import datetime
 
     
 def main():
@@ -110,7 +111,7 @@ class User_Interface:
         self.button_refresh_list = ttk.Button(master = self.input_frame, text='Refresh')
         self.button_refresh_list.grid(column=0, row=6)
 
-        self.button_text_detection = ttk.Button(master = self.input_frame, text='Text', command=self.open_text_window)
+        self.button_text_detection = ttk.Button(master = self.input_frame, text='Text', state= DISABLED)
         self.button_text_detection.grid(column=1, row=7)
 
         #scale
@@ -176,6 +177,8 @@ class User_Interface:
         self.list.bind('<<ListboxSelect>>', self.onselect)
         self.button_stop.config(state=DISABLED)
         self.button_stop.unbind('<ButtonRelease-1>')
+        self.button_text_detection.config(state=DISABLED)
+        self.button_text_detection.unbind('<ButtonRelease-1>')
 
     def start_selection(self,event):
             chosen_window = None
@@ -223,6 +226,8 @@ class User_Interface:
             self.button_load_img.bind('<ButtonRelease-1>', self.load_img)
             self.button_window_selection.config(state=DISABLED)
             self.button_window_selection.unbind('<ButtonRelease-1>')
+            self.button_text_detection.config(state=NORMAL)
+            self.button_text_detection.bind('<ButtonRelease-1>', self.open_text_window)
 
 
     def show_video(self):
@@ -282,6 +287,20 @@ class User_Interface:
         for title in self.titles:
                     self.list.insert(0, title)  
 
+    def calc_time_left(self, horse):
+        currentDateAndTime = datetime.now()
+        current_Time = int(currentDateAndTime.strftime("%H:%M").replace(':',''))
+
+        try:
+            if ":" in horse.registration:
+                horse_time = int(horse.registration.replace(':',''))+10
+            else:
+                return 'Error'
+            total_time = horse_time-current_Time
+            return str(total_time)
+        except:
+            return 'Error'
+
     def get_entries_from_manager(self):
         #todo combine lists
         self.tree.delete(*self.tree.get_children())
@@ -306,9 +325,10 @@ class User_Interface:
         self.tree.after(1000, self.get_entries_from_manager)
         
 
-    def open_text_window(self):
-        #start horse thread
-        self.core.horsemarketmanager.start()
+    def open_text_window(self, event):
+        if self.core.horsemarketmanager.stopped == True:
+            #start horse thread
+            self.core.horsemarketmanager.start()
         style = ttk.Style()
         #style.theme_use("default")
         style.configure("Treeview", background="silver", foreground="black", fieldbackground="silver", rowheight=25)

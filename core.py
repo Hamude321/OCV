@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 import os
 from detection import Detection
-from time import time, sleep
+from time import time, sleep, perf_counter
 from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
@@ -101,6 +101,9 @@ class Running:
                 # if len(self.detector.rectangles) > 0:
                     # print (self.detector.rectangles)
                 #WindowCapture.show_cursor_position()
+
+                #limit amount of loops
+                sleep(1./25)
 
             if self._return:
                 sys.exit()

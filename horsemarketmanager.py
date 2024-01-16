@@ -1,10 +1,6 @@
 import easyocr
-import cv2 as cv
-import matplotlib.pyplot as plt
-import numpy as np
 from threading import Thread, Lock
 from time import time, sleep
-from datetime import datetime
 
 class HorseMarketManager:
     class HorseMarketEntry:
@@ -35,7 +31,7 @@ class HorseMarketManager:
     def __init__(self):
         self.lock = Lock()
         # instance text detector  
-        self.reader = easyocr.Reader(['en'], gpu=False)
+        self.reader = easyocr.Reader(['en'], gpu=True)
     
     def update(self, screenshot):
         self.lock.acquire()
@@ -50,23 +46,7 @@ class HorseMarketManager:
     def stop(self):
         self.stopped = True 
       
-    def calc_time_left(self, horse):
-        currentDateAndTime = datetime.now()
-        current_Time = int(currentDateAndTime.strftime("%H:%M").replace(':',''))
-
-        try:
-            if ":" in horse.registration:
-                horse_time = int(horse.registration.replace(':',''))+10
-            else:
-                return 'Error'
-            total_time = horse_time-current_Time
-            return str(total_time)
-        except:
-            return 'Error'
-
-
     def add_entry(self, entries, img):         
-        # img = cv.imread(img)
 
         # detect text on image
         text_ = self.reader.readtext(img)
@@ -82,43 +62,22 @@ class HorseMarketManager:
                 #add entry
                 entry = self.HorseMarketEntry(tier, silver, registration)
 
+                #check for duplicates
                 if not entries is None:
                     if not any(entry == existing_entry for existing_entry in entries):
                         entries.append(entry)
         return entries
 
-    # for e in entries:
-    #     print(e.tier+' '+e.silver+' '+str(e.registration))
-    # print(entries)
-    # print(len(entries))
-
-    # plt.imshow(cv.cvtColor(img, cv.COLOR_BGR2RGB))
-    # plt.show()
-
     def run(self):
         if self.stopped:
             return
-        # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             if not self.screenshot is None:
-                sleep(1)
-                #debug time
-                # do object detection
+                sleep(5)
+                # search img
                 entries = self.add_entry(self.entries, self.screenshot)
-                if not self.entries is None:
-                    print(len(self.entries))
-                currentDateAndTime = datetime.now()
-                currentTime = currentDateAndTime.strftime("%H:%M")
-                print(currentTime)
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.entries = entries
                 self.lock.release()  
 
-# manager = HorseMarketManager()
-# manager.add_entry(HorseMarketManager.image_path)
-# manager.add_entry('assets\pics\\bdochat.jpg')
-# manager.add_entry(HorseMarketManager.image_path)
-
-# print(len(manager.entries))
-# print(manager.entries[0].silver)
