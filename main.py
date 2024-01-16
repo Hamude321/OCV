@@ -110,6 +110,9 @@ class User_Interface:
         self.button_refresh_list = ttk.Button(master = self.input_frame, text='Refresh')
         self.button_refresh_list.grid(column=0, row=6)
 
+        self.button_text_detection = ttk.Button(master = self.input_frame, text='Text', command=self.open_text_window)
+        self.button_text_detection.grid(column=1, row=7)
+
         #scale
         self.threshold_scale = ttk.Scale(master=self.input_frame, value=30, from_=30, to=100)
         self.threshold_scale.grid(column=2, row=2, sticky='nswe')
@@ -277,7 +280,49 @@ class User_Interface:
             if len(x.title)>0:
                 self.titles.append(x.title)
         for title in self.titles:
-                    self.list.insert(0, title)           
+                    self.list.insert(0, title)  
+
+    def get_entries_from_manager(self):
+        #todo combine lists
+        self.tree.delete(*self.tree.get_children())
+        a = 0
+        entries = self.core.horsemarketmanager.entries
+        for e in entries:
+            self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration))
+            a+=1
+        self.tree.after(1000, self.get_entries_from_manager)
+        
+
+    def open_text_window(self):
+        self.core.horsemarketmanager.start()
+        style = ttk.Style()
+        #style.theme_use("default")
+        style.configure("Treeview", background="silver", foreground="black", fieldbackground="silver", rowheight=25)
+
+
+        top = Toplevel() 
+
+        self.tree = ttk.Treeview(top, column=("c1", "c2", "c3"), show='headings', height=100)
+
+        self.tree.column("# 1",width = 100, anchor=CENTER)
+        self.tree.heading("# 1", text="Horse")
+        self.tree.column("# 2",width = 100, anchor=CENTER)
+        self.tree.heading("# 2", text="Silver")
+        self.tree.column("# 3",width = 50, anchor=CENTER)
+        self.tree.heading("# 3", text="Time")
+
+        # Insert the data in self.treeview widget
+        self.tree.insert('', 'end', text="1", values=('1', 'Joe', 'Nash'))
+        self.tree.insert('', 'end', text="2", values=('2', 'Emily', 'Mackmohan'))
+        self.tree.insert('', 'end', text="3", values=('3', 'Estilla', 'Roffe'))
+        self.tree.insert('', 'end', text="4", values=('4', 'Percy', 'Andrews'))
+
+        self.get_entries_from_manager()
+
+        self.tree.pack()
+
+
+
 
 
 main()
