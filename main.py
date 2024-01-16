@@ -288,21 +288,39 @@ class User_Interface:
         a = 0
         entries = self.core.horsemarketmanager.entries
         for e in entries:
-            self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration))
-            a+=1
+            time_left = self.core.horsemarketmanager.calc_time_left(e)
+            if  time_left != 'Error':
+                if int(time_left)>3:
+                    self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left))
+                elif 3>=int(time_left)>=2:
+                    self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left), tags = ('almostbuyable',))
+                elif 2>int(time_left)>=0:
+                    self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left), tags = ('buyable',))
+                elif 0>int(time_left)>=-1:
+                    self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left), tags = ('afterbuyable',))
+                elif -2>=int(time_left)>-3:
+                    self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left), tags = ('toolate',))
+                elif -3>=int(time_left):
+                    print (str(time_left))
+                a+=1
         self.tree.after(1000, self.get_entries_from_manager)
         
 
     def open_text_window(self):
+        #start horse thread
         self.core.horsemarketmanager.start()
         style = ttk.Style()
         #style.theme_use("default")
         style.configure("Treeview", background="silver", foreground="black", fieldbackground="silver", rowheight=25)
 
-
         top = Toplevel() 
 
-        self.tree = ttk.Treeview(top, column=("c1", "c2", "c3"), show='headings', height=100)
+        self.tree = ttk.Treeview(top, column=("c1", "c2", "c3", "c4"), show='headings', height=100)
+
+        self.tree.tag_configure('almostbuyable', background='green yellow')
+        self.tree.tag_configure('buyable', background='lime green')
+        self.tree.tag_configure('afterbuyable', background='light coral')
+        self.tree.tag_configure('toolate', background='red')
 
         self.tree.column("# 1",width = 100, anchor=CENTER)
         self.tree.heading("# 1", text="Horse")
@@ -310,12 +328,8 @@ class User_Interface:
         self.tree.heading("# 2", text="Silver")
         self.tree.column("# 3",width = 50, anchor=CENTER)
         self.tree.heading("# 3", text="Time")
-
-        # Insert the data in self.treeview widget
-        self.tree.insert('', 'end', text="1", values=('1', 'Joe', 'Nash'))
-        self.tree.insert('', 'end', text="2", values=('2', 'Emily', 'Mackmohan'))
-        self.tree.insert('', 'end', text="3", values=('3', 'Estilla', 'Roffe'))
-        self.tree.insert('', 'end', text="4", values=('4', 'Percy', 'Andrews'))
+        self.tree.column("# 4",width = 50, anchor=CENTER)
+        self.tree.heading("# 4", text="Left")
 
         self.get_entries_from_manager()
 

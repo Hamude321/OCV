@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from threading import Thread, Lock
 from time import time, sleep
+from datetime import datetime
 
 class HorseMarketManager:
     class HorseMarketEntry:
@@ -49,6 +50,20 @@ class HorseMarketManager:
     def stop(self):
         self.stopped = True 
       
+    def calc_time_left(self, horse):
+        currentDateAndTime = datetime.now()
+        current_Time = int(currentDateAndTime.strftime("%H:%M").replace(':',''))
+
+        try:
+            if ":" in horse.registration:
+                horse_time = int(horse.registration.replace(':',''))+10
+            else:
+                return 'Error'
+            total_time = horse_time-current_Time
+            return str(total_time)
+        except:
+            return 'Error'
+
 
     def add_entry(self, entries, img):         
         # img = cv.imread(img)
@@ -61,8 +76,8 @@ class HorseMarketManager:
             if any(x in text for x in self.matches):
                 splits = text.split(' ')
                 tier = splits[0] + ' ' + splits[1]
-                silver = splits[2]
-                registration = (splits[-1].replace(')','')).replace('(','')
+                silver = splits[2].replace('.',',')
+                registration = ((splits[-1].replace(')','')).replace('(','')).replace('.',':')
 
                 #add entry
                 entry = self.HorseMarketEntry(tier, silver, registration)
@@ -92,6 +107,9 @@ class HorseMarketManager:
                 entries = self.add_entry(self.entries, self.screenshot)
                 if not self.entries is None:
                     print(len(self.entries))
+                currentDateAndTime = datetime.now()
+                currentTime = currentDateAndTime.strftime("%H:%M")
+                print(currentTime)
                 # lock the thread while updating the results
                 self.lock.acquire()
                 self.entries = entries

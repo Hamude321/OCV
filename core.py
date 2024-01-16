@@ -70,7 +70,7 @@ class Running:
         self.isRunning=True
         self.wincap.start()
         self.detector.start()
-        self.horsemarketmanager.start()
+        #self.horsemarketmanager.start()
         # self.automation.start()
       
         
