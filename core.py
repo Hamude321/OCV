@@ -7,6 +7,7 @@ from windowcapture import WindowCapture
 from vision import Vision
 import pyautogui, sys
 from automation import Automation
+from horsemarketmanager import HorseMarketManager
 
 class Running:
 
@@ -25,6 +26,7 @@ class Running:
     _return = False
     stop_thread = False
     loop_time = time()
+    horsemarketmanager = None
     #automation = None
 
     needle_images = []
@@ -42,6 +44,8 @@ class Running:
         #load the detector
         self.detector = Detection(self.vision)
 
+        self.horsemarketmanager = HorseMarketManager()
+
         #load the automation
         #self.automation = Automation(self.detector)
 
@@ -51,6 +55,7 @@ class Running:
     def close_window(self):
         self.wincap.stop()
         self.detector.stop()
+        self.horsemarketmanager.stop()
         #self.automation.stop()
         self.stop_thread = True
         return
@@ -65,6 +70,7 @@ class Running:
         self.isRunning=True
         self.wincap.start()
         self.detector.start()
+        self.horsemarketmanager.start()
         # self.automation.start()
       
         
@@ -78,6 +84,9 @@ class Running:
 
             #give detector current screenshot
             self.detector.update(self.wincap.screenshot)
+
+            self.horsemarketmanager.update(self.wincap.screenshot)
+
 
             #draw detection results onto the original image
             self.detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)            
