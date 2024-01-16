@@ -2,6 +2,7 @@ import numpy as np
 import win32gui, win32ui, win32con
 from threading import Thread, Lock
 import pyautogui
+from time import sleep
 
 
 class WindowCapture:
@@ -156,6 +157,7 @@ class WindowCapture:
           return
         # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
+            sleep(1./25)
             # get an updated image of the game
             screenshot = self.get_screenshot()
             # lock the thread while updating the results

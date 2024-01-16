@@ -285,15 +285,26 @@ class User_Interface:
             if len(x.title)>0:
                 self.titles.append(x.title)
         for title in self.titles:
-                    self.list.insert(0, title)  
+                    self.list.insert(0, title) 
 
+
+    #Second window
+                    
     def calc_time_left(self, horse):
         currentDateAndTime = datetime.now()
         current_Time = int(currentDateAndTime.strftime("%H:%M").replace(':',''))
 
         try:
             if ":" in horse.registration:
-                horse_time = int(horse.registration.replace(':',''))+10
+                splith = horse.registration.split(':')
+                splitt = currentDateAndTime.strftime("%H:%M").split(':')
+
+                if int(splith[1])>=50:
+                    horse_time = int(horse.registration.replace(':',''))+50
+                    if int(splitt[1])>=50:
+                        current_Time = current_Time + 40
+                else:    
+                    horse_time = int(horse.registration.replace(':',''))+10
             else:
                 return 'Error'
             total_time = horse_time-current_Time
@@ -307,7 +318,7 @@ class User_Interface:
         a = 0
         entries = self.core.horsemarketmanager.entries
         for e in entries:
-            time_left = self.core.horsemarketmanager.calc_time_left(e)
+            time_left = self.calc_time_left(e)
             if  time_left != 'Error':
                 if int(time_left)>3:
                     self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left))
@@ -335,14 +346,14 @@ class User_Interface:
 
         top = Toplevel() 
 
-        self.tree = ttk.Treeview(top, column=("c1", "c2", "c3", "c4"), show='headings', height=100)
+        self.tree = ttk.Treeview(top, column=("c1", "c2", "c3", "c4"), show='headings', height=20)
 
         self.tree.tag_configure('almostbuyable', background='green yellow')
         self.tree.tag_configure('buyable', background='lime green')
         self.tree.tag_configure('afterbuyable', background='light coral')
         self.tree.tag_configure('toolate', background='red')
 
-        self.tree.column("# 1",width = 100, anchor=CENTER)
+        self.tree.column("# 1",width = 100, minwidth = 100, anchor=CENTER)
         self.tree.heading("# 1", text="Horse")
         self.tree.column("# 2",width = 100, anchor=CENTER)
         self.tree.heading("# 2", text="Silver")

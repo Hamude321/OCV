@@ -103,7 +103,7 @@ class Running:
                 #WindowCapture.show_cursor_position()
 
                 #limit amount of loops
-                sleep(1./25)
+                sleep(1./70)
 
             if self._return:
                 sys.exit()

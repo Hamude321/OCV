@@ -1,7 +1,7 @@
 import cv2 as cv
 from threading import Thread, Lock
 from vision import Vision
-from time import time
+from time import time, sleep
 
 
 class Detection:
@@ -50,6 +50,8 @@ class Detection:
         # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             if not self.screenshot is None:
+                #limit amount of loops
+                sleep(1./25)
                 #debug time
                 # do object detection
                 rectangles = self.vision.find(self.screenshot,self.threshold)
