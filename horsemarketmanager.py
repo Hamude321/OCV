@@ -52,7 +52,7 @@ class HorseMarketManager:
         #convert img to grayscale
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         #convert img to black and white pixels
-        img = cv.threshold(img, 0,255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
+        #img = cv.threshold(img, 0,255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
         # detect text on image
         text_ = self.reader.readtext(img)
 
@@ -60,17 +60,18 @@ class HorseMarketManager:
             _, text, _ = t
             if any(x in text for x in self.matches):
                 splits = text.split(' ')
-                tier = splits[0] + ' ' + splits[1]
-                silver = splits[2].replace('.',',')
-                registration = ((splits[-1].replace(')','')).replace('(','')).replace('.',':')
+                if len(splits)>4:
+                    tier = splits[0] + ' ' + splits[1]
+                    silver = splits[2].replace('.',',')
+                    registration = ((splits[-1].replace(')','')).replace('(','')).replace('.',':')
 
-                #add entry
-                entry = self.HorseMarketEntry(tier, silver, registration)
+                    #add entry
+                    entry = self.HorseMarketEntry(tier, silver, registration)
 
-                #check for duplicates
-                if not entries is None:
-                    if not any(entry == existing_entry for existing_entry in entries):
-                        entries.append(entry)
+                    #check for duplicates
+                    if not entries is None:
+                        if not any(entry == existing_entry for existing_entry in entries):
+                            entries.append(entry)
         return entries
 
     def run(self):

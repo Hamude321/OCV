@@ -340,12 +340,14 @@ class User_Interface:
             #start horse thread
             self.core.horsemarketmanager.start()
         style = ttk.Style()
-        #style.theme_use("default")
+        # style.theme_use("clam")
         style.configure("Treeview", background="silver", foreground="black", fieldbackground="silver", rowheight=25)
 
-        top = Toplevel() 
+        top = tk.Toplevel() 
+        top.geometry('305x600')
+        top.resizable(False,True)
 
-        self.tree = ttk.Treeview(top, column=("c1", "c2", "c3", "c4"), show='headings', height=20)
+        self.tree = ttk.Treeview(top, column=("c1", "c2", "c3", "c4"), show='headings', height=25, selectmode=None)
 
         self.tree.tag_configure('almostbuyable', background='green yellow')
         self.tree.tag_configure('buyable', background='lime green')
@@ -354,11 +356,11 @@ class User_Interface:
 
         self.tree.column("# 1",width = 100, minwidth = 100, anchor=CENTER)
         self.tree.heading("# 1", text="Horse")
-        self.tree.column("# 2",width = 100, anchor=CENTER)
+        self.tree.column("# 2",width = 100,minwidth = 100, anchor=CENTER)
         self.tree.heading("# 2", text="Silver")
-        self.tree.column("# 3",width = 50, anchor=CENTER)
+        self.tree.column("# 3",width = 50,minwidth = 50, anchor=CENTER)
         self.tree.heading("# 3", text="Time")
-        self.tree.column("# 4",width = 50, anchor=CENTER)
+        self.tree.column("# 4",width = 50,minwidth = 50, anchor=CENTER)
         self.tree.heading("# 4", text="Left")
 
         self.get_entries_from_manager()
