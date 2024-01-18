@@ -1,6 +1,7 @@
 import easyocr
 from threading import Thread, Lock
 from time import time, sleep
+import cv2 as cv
 
 class HorseMarketManager:
     class HorseMarketEntry:
@@ -48,6 +49,10 @@ class HorseMarketManager:
       
     def add_entry(self, entries, img):         
 
+        #convert img to grayscale
+        img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        #convert img to black and white pixels
+        img = cv.threshold(img, 0,255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
         # detect text on image
         text_ = self.reader.readtext(img)
 

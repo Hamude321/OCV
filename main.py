@@ -329,9 +329,8 @@ class User_Interface:
                 elif 0>int(time_left)>=-1:
                     self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left), tags = ('afterbuyable',))
                 elif -2>=int(time_left)>-3:
-                    self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left), tags = ('toolate',))
-                elif -3>=int(time_left):
-                    print (str(time_left))
+                    self.tree.insert('', 'end', text=str(a), values=(e.tier, e.silver, e.registration, time_left), tags = ('toolate',))     
+                                 
                 a+=1
         self.tree.after(1000, self.get_entries_from_manager)
         

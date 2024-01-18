@@ -91,7 +91,6 @@ class Running:
             #draw detection results onto the original image
             self.detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)            
 
-
             if self.DEBUG:
                 #display the images
                 #self.screen = cv.imshow(self.gameName+'1', self.detection_img) 
@@ -101,7 +100,9 @@ class Running:
                 # if len(self.detector.rectangles) > 0:
                     # print (self.detector.rectangles)
                 #WindowCapture.show_cursor_position()
-
+                # blub = cv.cvtColor(self.detection_img, cv.COLOR_BGR2GRAY)
+                # blub = cv.threshold(blub,0,255, cv.THRESH_BINARY + cv.THRESH_OTSU)[1]
+                # cv.imshow('bla',blub )
                 #limit amount of loops
                 sleep(1./70)
 
