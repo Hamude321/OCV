@@ -17,7 +17,7 @@ while x==True:
 
 
     #click pen
-    sleep(0.5)
+    sleep(0.1)
     pyautogui.moveTo(x=random.randrange(132, 255), y=random.randrange(1144, 1174))
     sleep(random.randrange(1, 5)/10)
     pyautogui.click()
