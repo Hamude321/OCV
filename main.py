@@ -111,8 +111,11 @@ class User_Interface:
         self.button_refresh_list = ttk.Button(master = self.input_frame, text='Refresh')
         self.button_refresh_list.grid(column=0, row=6)
 
-        self.button_text_detection = ttk.Button(master = self.input_frame, text='Text', state= DISABLED)
+        self.button_text_detection = ttk.Button(master = self.input_frame, text='Horse', state= DISABLED)
         self.button_text_detection.grid(column=1, row=7)
+
+        self.button_processing = ttk.Button(master = self.input_frame, text='Processing', state= DISABLED)
+        self.button_processing.grid(column=1, row=8)
 
         #scale
         self.threshold_scale = ttk.Scale(master=self.input_frame, value=30, from_=30, to=100)
@@ -179,6 +182,8 @@ class User_Interface:
         self.button_stop.unbind('<ButtonRelease-1>')
         self.button_text_detection.config(state=DISABLED)
         self.button_text_detection.unbind('<ButtonRelease-1>')
+        self.button_processing.config(state=DISABLED)
+        self.button_processing.unbind('<ButtonRelease-1>')
 
     def start_selection(self,event):
             chosen_window = None
@@ -228,6 +233,8 @@ class User_Interface:
             self.button_window_selection.unbind('<ButtonRelease-1>')
             self.button_text_detection.config(state=NORMAL)
             self.button_text_detection.bind('<ButtonRelease-1>', self.open_text_window)
+            self.button_processing.config(state=NORMAL)
+            self.button_processing.bind('<ButtonRelease-1>', self.open_processing_window)
 
 
     def show_video(self):
@@ -366,6 +373,11 @@ class User_Interface:
         self.get_entries_from_manager()
 
         self.tree.pack()
+
+    def open_processing_window(self, event):
+        if self.core.processingmanager.stopped == True:
+            #start horse thread
+            self.core.processingmanager.start()
 
 
 

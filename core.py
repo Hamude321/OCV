@@ -8,6 +8,7 @@ from vision import Vision
 import pyautogui, sys
 from automation import Automation
 from horsemarketmanager import HorseMarketManager
+from processingmanager import ProcessingManager
 
 class Running:
 
@@ -27,6 +28,7 @@ class Running:
     stop_thread = False
     loop_time = time()
     horsemarketmanager = None
+    processingmanager = None
     #automation = None
 
     needle_images = []
@@ -46,6 +48,8 @@ class Running:
 
         self.horsemarketmanager = HorseMarketManager()
 
+        self.processingmanager = ProcessingManager()
+
         #load the automation
         #self.automation = Automation(self.detector)
 
@@ -56,6 +60,7 @@ class Running:
         self.wincap.stop()
         self.detector.stop()
         self.horsemarketmanager.stop()
+        self.processingmanager.stop()
         #self.automation.stop()
         self.stop_thread = True
         return
@@ -86,6 +91,8 @@ class Running:
             self.detector.update(self.wincap.screenshot)
 
             self.horsemarketmanager.update(self.wincap.screenshot)
+
+            self.processingmanager.update(self.wincap.screenshot)
 
 
             #draw detection results onto the original image
