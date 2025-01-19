@@ -14,7 +14,6 @@ class Vision:
     loop_time = time()
     max_val=0
 
-
     # constructor
     def __init__(self, needle_img_path, method=cv.TM_CCOEFF_NORMED):
         # load the image we're trying to match
@@ -34,7 +33,7 @@ class Vision:
         self.needle_w = self.needle_img.shape[1]
         self.needle_h = self.needle_img.shape[0]
 
-    def find(self, haystack_img, threshhold, max_results=30):
+    def find(self, haystack_img, threshhold, max_results=15):
         #debug time
         # print('FPS {}'.format(1/(time()- self.loop_time)))
         # self.loop_time = time()
@@ -59,21 +58,16 @@ class Vision:
 
         if len(rectangles) > max_results:
             print('Warning: Too many results, raise threshold')
-            rectangles = rectangles[:max_results]
-        
-
+            rectangles = rectangles[:max_results]       
         return rectangles
 
     def get_click_points(self, rectangles):
         points = []
-
         for (x, y, w, h) in rectangles:
             center_x = x + int(w/2)
             center_y = y + int(h/2)
-
             points.append((center_x, center_y))
         return points
-
 
     def draw_rectangles(self, haystack_img, rectangles):
         line_color = (0,255,0)

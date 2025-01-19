@@ -2,6 +2,7 @@ import numpy as np
 import win32gui, win32ui, win32con
 from threading import Thread, Lock
 import pyautogui
+from time import sleep
 
 
 class WindowCapture:
@@ -18,7 +19,6 @@ class WindowCapture:
     cropped_y = 0
     offset_x = 0
     offset_y = 0
-
     recorded_coords=np.zeros((2,2), dtype=int)
 
     # constructor
@@ -32,7 +32,6 @@ class WindowCapture:
         self.x2=recorded_coords[1,0]
         self.y2=recorded_coords[1,1]
         
-
         # find the handle for the window we want to capture.
         # if no window name is given, capture the entire screen
         if window_name is None:
@@ -65,9 +64,9 @@ class WindowCapture:
             self.h = window_rect[3] - window_rect[1]
 
             # account for the window border and titlebar and cut them off
-            border_pixels = 8
-            titlebar_pixels = 30
-            self.w = self.w - (border_pixels * 2)
+            border_pixels = 0
+            titlebar_pixels = 20
+            # self.w = self.w - (border_pixels * 2)
             self.h = self.h - titlebar_pixels - border_pixels
             self.cropped_x = border_pixels
             self.cropped_y = titlebar_pixels
@@ -142,7 +141,6 @@ class WindowCapture:
         return (pos[0] + self.offset_x, pos[1] + self.offset_y)
 
     # threading methods
-
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
@@ -151,32 +149,11 @@ class WindowCapture:
     def stop(self):
         self.stopped = True
 
-    def update(self, x1,y1,x2,y2):
-        self.lock.acquire()
-        # get the window size
-        window_rect = win32gui.GetWindowRect(self.hwnd)
-        self.w = x2 - x1
-        self.h = y2 - y1
-
-        # account for the window border and titlebar and cut them off
-        border_pixels = 8
-        titlebar_pixels = 30
-        self.w = self.w - (border_pixels * 2)
-        self.h = self.h - titlebar_pixels - border_pixels
-        self.cropped_x = border_pixels
-        self.cropped_y = titlebar_pixels
-
-        # set the cropped coordinates offset so we can translate screenshot
-        # images into actual screen positions
-        self.offset_x = window_rect[0] + self.cropped_x
-        self.offset_y = window_rect[1] + self.cropped_y
-        self.lock.release()
-
     def run(self):
         if self.stopped:
           return
-        # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
+            sleep(1./25)
             # get an updated image of the game
             screenshot = self.get_screenshot()
             # lock the thread while updating the results
