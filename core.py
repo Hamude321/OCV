@@ -34,8 +34,8 @@ class Running:
 
     def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
-        #sets a defualt needle img
-        self.img_path = 'assets\pics\leaf4.jpg'
+        #sets a default needle img
+        self.img_path = 'assets\pics\default.jpg'
         self.img_path = self.current_path+'\\'+self.img_path
         #get window name
         self.wincap = WindowCapture(self.gameName, recorded_coords)
