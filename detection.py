@@ -23,6 +23,10 @@ class Detection:
         # load the trained model
         self.vision = vision
 
+    def get_detection_fps(self):
+        return self.fps
+    
+    # threading methods
     def update(self, screenshot):
         self.lock.acquire()
         self.screenshot = screenshot
@@ -32,10 +36,7 @@ class Detection:
         self.lock.acquire()
         self.threshold = threshold
         self.lock.release()
-
-    def get_detection_fps(self):
-        return self.fps
-    
+ 
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
@@ -47,7 +48,7 @@ class Detection:
     def run(self):
         if self.stopped:
             return
-        # TODO: you can write your own time/iterations calculation to determine how fast this is
+
         while not self.stopped:
             if not self.screenshot is None:
                 #limit amount of loops

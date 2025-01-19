@@ -19,7 +19,6 @@ class WindowCapture:
     cropped_y = 0
     offset_x = 0
     offset_y = 0
-
     recorded_coords=np.zeros((2,2), dtype=int)
 
     # constructor
@@ -33,7 +32,6 @@ class WindowCapture:
         self.x2=recorded_coords[1,0]
         self.y2=recorded_coords[1,1]
         
-
         # find the handle for the window we want to capture.
         # if no window name is given, capture the entire screen
         if window_name is None:
@@ -143,7 +141,6 @@ class WindowCapture:
         return (pos[0] + self.offset_x, pos[1] + self.offset_y)
 
     # threading methods
-
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)
@@ -155,7 +152,6 @@ class WindowCapture:
     def run(self):
         if self.stopped:
           return
-        # TODO: you can write your own time/iterations calculation to determine how fast this is
         while not self.stopped:
             sleep(1./25)
             # get an updated image of the game

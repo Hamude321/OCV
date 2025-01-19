@@ -9,6 +9,7 @@ class Automation:
     # threading properties
     stopped = True
     lock = None 
+    # properties
     detector = None 
     i=0
 
@@ -26,6 +27,7 @@ class Automation:
             print('Space')
             sleep(1)  
 
+    # threading methods
     def start(self):
         self.stopped = False
         t = Thread(target=self.run)

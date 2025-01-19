@@ -23,7 +23,7 @@ class HorseMarketManager:
     stopped = True
     lock = None
     screenshot = None
-
+    # properties    
     entries=[]
     matches = ["Tier 8", "Dream Horse"]
     reader = None
@@ -34,21 +34,7 @@ class HorseMarketManager:
         # instance text detector  
         self.reader = easyocr.Reader(['en'], gpu=True)
     
-    def update(self, screenshot):
-        self.lock.acquire()
-        self.screenshot = screenshot
-        self.lock.release()
-
-    def start(self):
-        self.stopped = False
-        t = Thread(target=self.run)
-        t.start()   
-
-    def stop(self):
-        self.stopped = True 
-      
     def add_entry(self, entries, img):         
-
         #convert img to grayscale
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         #convert img to black and white pixels
@@ -73,6 +59,20 @@ class HorseMarketManager:
                         if not any(entry == existing_entry for existing_entry in entries):
                             entries.append(entry)
         return entries
+
+    # threading methods
+    def update(self, screenshot):
+        self.lock.acquire()
+        self.screenshot = screenshot
+        self.lock.release()
+
+    def start(self):
+        self.stopped = False
+        t = Thread(target=self.run)
+        t.start()   
+
+    def stop(self):
+        self.stopped = True 
 
     def run(self):
         if self.stopped:

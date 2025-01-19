@@ -11,10 +11,9 @@ from horsemarketmanager import HorseMarketManager
 from processingmanager import ProcessingManager
 
 class Running:
-
-    
+  
+    # properties
     current_path = os.path.dirname(os.path.abspath(__file__))
-
     gameName = None
     img_path = None
     wincap = None
@@ -27,14 +26,15 @@ class Running:
     _return = False
     stop_thread = False
     loop_time = time()
+    needle_images = []
     horsemarketmanager = None
     processingmanager = None
     #automation = None
 
-    needle_images = []
 
     def __init__(self, gameName, recorded_coords):
         self.gameName = gameName
+        #sets a defualt needle img
         self.img_path = 'assets\pics\leaf4.jpg'
         self.img_path = self.current_path+'\\'+self.img_path
         #get window name
@@ -46,8 +46,8 @@ class Running:
         #load the detector
         self.detector = Detection(self.vision)
 
+        #load manager classes
         self.horsemarketmanager = HorseMarketManager()
-
         self.processingmanager = ProcessingManager()
 
         #load the automation
@@ -70,14 +70,13 @@ class Running:
     
     def get_core_fps(self):
         return self.fps
-    
+
+    #starts main process  
     def runstuff(self):
         self.isRunning=True
         self.wincap.start()
         self.detector.start()
-        #self.horsemarketmanager.start()
-        # self.automation.start()
-      
+        # self.automation.start() 
         
         while(True):
             if self.stop_thread:
@@ -89,11 +88,8 @@ class Running:
 
             #give detector current screenshot
             self.detector.update(self.wincap.screenshot)
-
             self.horsemarketmanager.update(self.wincap.screenshot)
-
             self.processingmanager.update(self.wincap.screenshot)
-
 
             #draw detection results onto the original image
             self.detection_img = self.vision.draw_rectangles(self.wincap.screenshot, self.detector.rectangles)            

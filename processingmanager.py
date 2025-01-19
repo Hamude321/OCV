@@ -9,11 +9,10 @@ class ProcessingManager:
     stopped = True
     lock = None
     screenshot = None
-
+    # properties
     entries=[]
     reader = None
     entry = None
-
 
     def __init__(self):
         self.lock = Lock()
@@ -32,8 +31,7 @@ class ProcessingManager:
 
     def stop(self):
         self.stopped = True 
-
-          
+         
     def add_entry(self, img):  
         divider = 0
         max_weight = 0 
@@ -71,9 +69,7 @@ class ProcessingManager:
                 print('Empty Bags')
             else:
                 print('Max:',max_weight,'Current:', current_weight, 'Factor:', divider)
-                print('Bags have Space')
-
-               
+                print('Bags have Space')            
 
     def run(self):
         if self.stopped:

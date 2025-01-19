@@ -65,8 +65,6 @@ class User_Interface:
         # self.toggle_frame.grid(column=0, row=6)
         # ttk.Label(self.toggle_frame, background='yellow').pack(expand=True, fill='both')
 
-
-
         #label
         self.video_label = ttk.Label(master=self.video_frame)
         self.video_label.pack(side='top', expand=True, fill='both')
@@ -137,7 +135,6 @@ class User_Interface:
         self.button_window_selection.bind('<ButtonRelease-1>', self.start_selection)
         self.button_refresh_list.bind('<ButtonRelease-1>', self.refresh_list)
 
-
        #input
         # entry_int = tk.IntVar(value=7)
         # entry = ttk.Entry(master=input_frame, textvariable=entry_int)
@@ -145,8 +142,6 @@ class User_Interface:
         
         #run(always at the end)
         self.window.mainloop()
-
-
 
     #methods   
     def onselect(self, event):
@@ -158,7 +153,8 @@ class User_Interface:
         if not self.is_running:        
             self.button_start.config(state=NORMAL) 
             self.button_start.bind('<ButtonRelease-1>', self.start_thread) 
-        
+
+    #stops running detection
     def stop_bot(self, event):
         self.recorded_coords = np.zeros((2,2), dtype=int)
         self.x1y1_string.set('x: y:')
@@ -185,6 +181,7 @@ class User_Interface:
         self.button_processing.config(state=DISABLED)
         self.button_processing.unbind('<ButtonRelease-1>')
 
+    #select which area to scan
     def start_selection(self,event):
             chosen_window = None
             if self.selected_item:
@@ -207,7 +204,8 @@ class User_Interface:
                 self.sound.play()
                 print(bottom_right)
                 self.start_thread(self)
-        
+
+    #starts the thread for detection
     def start_thread(self, event):
         if self.is_running is False:
             self.core = Running(self.selected_item, self.recorded_coords)
@@ -236,14 +234,13 @@ class User_Interface:
             self.button_processing.config(state=NORMAL)
             self.button_processing.bind('<ButtonRelease-1>', self.open_processing_window)
 
-
+    #shows captured images in dedicated area
     def show_video(self):
         self.display()
         
         #enable/disable widgets
         self.button_load_img.config(state=NORMAL)     
         self.button_load_img.bind('<ButtonRelease-1>', self.load_img)  
-           
 
     def display(self):
         if not self.core.detection_img is None:
@@ -266,17 +263,20 @@ class User_Interface:
         label.image = pic
         label.place(x=x, y=y)
 
+    #dynamic threshhold scale for the needle img
     def threshold(self, event):
         threshold=int((self.threshold_scale.get()))/100
         self.threshold_string.set(threshold) 
         if not self.core is None:
             self.core.detector.update_threshold(threshold)
 
+    #loads a saved needle img 
     def load_img(self,event):
         file = filedialog.askopenfilename(initialdir= "assets\\pics\\", filetypes= [("Image file", (".jpg"))])
         if len(file)>0:
             self.core.vision.update_needle_img_path(file)
-            
+
+     #scans all open windows to display as a selection       
     def get_titles(self):
         self.titles = []
         for x in pyautogui.getAllWindows():  
@@ -295,8 +295,8 @@ class User_Interface:
                     self.list.insert(0, title) 
 
 
-    #Second window
-                    
+    #Second window for the horsemarketmanager
+    # calculates time difference since entry                    
     def calc_time_left(self, horse):
         currentDateAndTime = datetime.now()
         current_Time = int(currentDateAndTime.strftime("%H:%M").replace(':',''))
@@ -319,6 +319,7 @@ class User_Interface:
         except:
             return 'Error'
 
+    #displays found entries
     def get_entries_from_manager(self):
         #todo combine lists
         self.tree.delete(*self.tree.get_children())
@@ -341,7 +342,7 @@ class User_Interface:
                 a+=1
         self.tree.after(1000, self.get_entries_from_manager)
         
-
+    #window layout for the horsemarketmanager
     def open_text_window(self, event):
         if self.core.horsemarketmanager.stopped == True:
             #start horse thread
@@ -374,13 +375,11 @@ class User_Interface:
 
         self.tree.pack()
 
+    #ToDo
     def open_processing_window(self, event):
         if self.core.processingmanager.stopped == True:
-            #start horse thread
+            #start processing thread
             self.core.processingmanager.start()
-
-
-
 
 
 main()
